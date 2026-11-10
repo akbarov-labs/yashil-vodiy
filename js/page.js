@@ -30,6 +30,9 @@ function timeToY(tt) {
 }
 // Long jumps are instant; the 3D eases to the new moment by itself.
 function go(y) { scrollTo({ top: y, behavior: reduce || Math.abs(y - scrollY) > innerHeight * 2.5 ? 'auto' : 'smooth' }); }
+document.querySelectorAll('[data-jump-t]').forEach(b => b.addEventListener('click', () => {
+  if (!story.classList.contains('is-static')) go(timeToY(+b.dataset.jumpT));
+}));
 document.querySelectorAll('[data-jump]').forEach(a => a.addEventListener('click', (e) => {
   if (story.classList.contains('is-static')) return;
   e.preventDefault();
@@ -173,6 +176,10 @@ function load3D() {
     .catch(err => { console.error(err); goStatic('fb.fail', false); });
 }
 $('#fbBtn').addEventListener('click', () => { load3D(); scrollTo({ top: timeToY(0) }); });
+
+// ?debug&only=layouts shows one section at the top of the page (for screenshots)
+const onlyQ = new URLSearchParams(location.search).has('debug') && new URLSearchParams(location.search).get('only');
+if (onlyQ) document.querySelectorAll('main > section').forEach(s => { if (s.id !== onlyQ && !s.classList.contains(onlyQ)) s.hidden = true; });
 
 initLang();
 onLang();

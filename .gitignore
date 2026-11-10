@@ -1,4 +1,10 @@
-.impeccable/
+.impeccable/critique/
+.impeccable/live/
+.impeccable/questions/
+.impeccable/mocks/
+.impeccable/review/
+.impeccable/build/
+.impeccable/config.local.json
 .gemini/
 .codex/
 .DS_Store

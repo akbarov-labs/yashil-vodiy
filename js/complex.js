@@ -229,9 +229,9 @@ export function buildComplex({ eco, maxAniso }) {
 
   // floor highlight for the floor picker (tower A)
   const TA = TOWERS[0];
-  const hlMat = new THREE.MeshBasicMaterial({ color: new THREE.Color('#ffb54a'), transparent: true, opacity: 0, depthWrite: false });
+  const hlMat = new THREE.MeshBasicMaterial({ color: new THREE.Color('#e39a2d'), transparent: true, opacity: 0, depthWrite: false });
   const hl = new THREE.Mesh(unit, hlMat); hl.scale.set(TA.w + 1.2, FH - 0.2, TA.d + 1.2); hl.renderOrder = 4;
-  const edgeMat = new THREE.LineBasicMaterial({ color: new THREE.Color('#ffe2a8').multiplyScalar(1.5), transparent: true, opacity: 0 });
+  const edgeMat = new THREE.LineBasicMaterial({ color: new THREE.Color('#f4c477').multiplyScalar(1.4), transparent: true, opacity: 0 });
   const edges = new THREE.LineSegments(new THREE.EdgesGeometry(unit), edgeMat); edges.scale.copy(hl.scale);
   const hov = new THREE.Mesh(unit, new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, depthWrite: false }));
   hov.scale.copy(hl.scale);
@@ -356,12 +356,12 @@ function buildCourtyard(yard, R, eco) {
   const crownGeo = new THREE.IcosahedronGeometry(1, 1).scale(2.2, 1.9, 2.2).translate(0, 4.2, 0);
   const trunks = new THREE.InstancedMesh(trunkGeo, std2('#4b3b2d', 0.9), pts.length);
   const crowns = new THREE.InstancedMesh(crownGeo, std2('#ffffff', 0.9), pts.length);
-  const greens = ['#62843f', '#6f9046', '#577a39', '#7f9b52', '#8a9a4a'].map(c => new THREE.Color(c));
+  const greens = ['#62843f', '#c39235', '#577a39', '#d1a243', '#7f9b52', '#ad7a2c'].map(c => new THREE.Color(c));
   pts.forEach((tr, i) => {
     q.setFromAxisAngle(new THREE.Vector3(0, 1, 0), R() * 6.28);
     m4.compose(p.set(tr[0], 0, tr[1]), q, s.setScalar(tr[2]));
     trunks.setMatrixAt(i, m4); crowns.setMatrixAt(i, m4);
-    crowns.setColorAt(i, greens[i % 5].clone().multiplyScalar(0.9 + R() * 0.25));
+    crowns.setColorAt(i, greens[i % greens.length].clone().multiplyScalar(0.9 + R() * 0.25));
   });
   trunks.castShadow = crowns.castShadow = true; crowns.receiveShadow = true;
   yard.add(trunks, crowns);

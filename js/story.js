@@ -111,7 +111,7 @@ export function start({ reduce = false, onFail } = {}) {
     addLabel('am', () => Y[k], () => `<span>${tr(key)}</span>`, D.LABEL_TIMES.amenity);
   }
   for (const L of apt.labels) {
-    addLabel('room', () => apt.group.localToWorld(L.local.clone()), () => `<span><b>${tr(L.key)}</b><small>${area(L.area)}</small></span>`, D.LABEL_TIMES.room);
+    addLabel(L.key === 'rm.hall' || L.key === 'rm.ward' ? 'room lbl-minor' : 'room', () => apt.group.localToWorld(L.local.clone()), () => `<span><b>${tr(L.key)}</b><small>${area(L.area)}</small></span>`, D.LABEL_TIMES.room);
   }
   const viewTag = $('#viewTag');
   function renderLabelText() { for (const L of labels) L.el.innerHTML = L.text(); viewTag.textContent = tr('view', { n: state.floor + 1 }); }
@@ -125,7 +125,8 @@ export function start({ reduce = false, onFail } = {}) {
       if (k < 0.01) { if (L.shown) { L.el.style.opacity = 0; L.el.style.visibility = 'hidden'; L.shown = false; } continue; }
       v3.copy(L.getPos()).project(camera);
       if (v3.z > 1 || v3.z < -1) { L.el.style.visibility = 'hidden'; L.shown = false; continue; }
-      const x = (v3.x * 0.5 + 0.5) * w, y = (-v3.y * 0.5 + 0.5) * h;
+      const hw = L.el.offsetWidth / 2 || 0;
+      const x = Math.min(w - hw - 6, Math.max(hw + 6, (v3.x * 0.5 + 0.5) * w)), y = (-v3.y * 0.5 + 0.5) * h;
       L.el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
       L.el.style.opacity = k.toFixed(3);
       L.el.style.visibility = 'visible';
@@ -330,6 +331,10 @@ export function start({ reduce = false, onFail } = {}) {
     dirFromAngles(sa.el, sa.az, sunDir);
     skyState(sa.el, S);
     sky.update(S, sunDir);
+    // the interface is dappled by the same sun: leaf shadows drift with its direction and fade at night
+    stage.style.setProperty('--sx', (sunDir.x * 180).toFixed(1) + 'px');
+    stage.style.setProperty('--sy', (sunDir.z * 120 - sunDir.y * 60).toFixed(1) + 'px');
+    stage.style.setProperty('--sun', (0.22 + 0.78 * S.sunVis * (0.55 + 0.45 * sk)).toFixed(3));
     const liftK = D.track(D.LIFT, t);
     const windowK = D.track(D.WINDOW, t);
     if (S.sunInt > 0.02) { sun.color.copy(S.sunCol); sun.intensity = S.sunInt; lightDir.copy(sunDir); }
@@ -385,8 +390,9 @@ export function start({ reduce = false, onFail } = {}) {
 
   // ---------- loop: scroll sets the target time, the shown time eases toward it ----------
   let time = 0, target = 0, drawnT = -1, dirty = true, raf = 0, last = performance.now(), visible = true;
-  let pulsed = false, pulseEnd = 0;
+  let pulsed = false, pulseEnd = 0, frozen = null;
   function readTarget() {
+    if (frozen != null) return frozen;
     const r = story.getBoundingClientRect();
     const span = r.height - stage.clientHeight;
     return Math.min(1, Math.max(0, -r.top / (span || 1))) * D.DURATION;
@@ -429,5 +435,8 @@ export function start({ reduce = false, onFail } = {}) {
         return +time.toFixed(2);
       },
     };
+    // ?debug&t=42 freezes the story at that moment without scrolling (for screenshots)
+    const tq = parseFloat(new URLSearchParams(location.search).get('t'));
+    if (!Number.isNaN(tq)) { frozen = time = target = tq; render(tq, performance.now() + 1e6); drawnT = tq; }
   }
 }

@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Yashil Vodiy Residence · Concept</title>
 <meta name="description" content="Concept website for a fictional residential complex in Tashkent: a scroll-driven 3D story by Akbarov Labs.">
-<meta name="theme-color" content="#13221a">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231f3a2c'/%3E%3Cpath d='M6 22c4-1 7-5 10-12 3 7 6 11 10 12' fill='none' stroke='%23e8d9b8' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#10221f">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2310221f'/%3E%3Cpath d='M16 4l2.4 6.8 7-2.7-3.2 6.2 6.5 4.4-7.7.3-3 4.6-.8 2.9v3.9h-1.6v-3.9l-.8-2.9-3-4.6-7.7-.3 6.5-4.4-3.2-6.2 7 2.7z' fill='%23e39a2d'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geologica:wght,SHRP@400..800,0..100&family=Golos+Text:wght@400..600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <script type="importmap">
 { "imports": {
@@ -24,7 +24,7 @@
 
 <header class="hdr" id="hdr">
   <a class="brand" href="#top" aria-label="Yashil Vodiy Residence">
-    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="currentColor" opacity=".14"/><path d="M6 22c4-1 7-5 10-12 3 7 6 11 10 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M11 22c2-.6 3.6-2.4 5-5.4 1.4 3 3 4.8 5 5.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".6"/></svg>
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M15.2 22.6h1.6V30h-1.6z" fill="currentColor"/><path d="M16 23c-3 0-5-1-6-2l-6 1 3.5-5L2 13l7-.5L7 6l6 3.5L16 2.5l3 7L25 6l-2 6.5 7 .5-5.5 4 3.5 5-6-1c-1 1-3 2-6 2z" fill="currentColor"/><path d="M16 27.6V10.6M16 21.4l6.6-6.3M16 21.4l-6.6-6.3M16 17l4.4-7.1M16 17l-4.4-7.1" fill="none" stroke="#10221f" stroke-width="1.1" stroke-linecap="round" opacity=".55"/></svg>
     <span class="wordmark">Yashil Vodiy<small data-i18n="brand.sub">Residence</small></span>
   </a>
   <nav class="nav" aria-label="Sections">
@@ -37,7 +37,7 @@
     <div class="langs" role="group" aria-label="Language">
       <button type="button" data-lang="uz">UZ</button><button type="button" data-lang="ru">RU</button><button type="button" data-lang="en">EN</button>
     </div>
-    <button type="button" class="btn btn-cta" data-visit data-i18n="cta.short">Book a visit</button>
+    <button type="button" class="btn btn-cta" data-visit><span class="cta-full" data-i18n="cta.short">Book a visit</span><span class="cta-tiny" data-i18n="cta.tiny">Visit</span></button>
   </div>
   <i class="chbar" id="chbar" aria-hidden="true"></i>
 </header>
@@ -60,11 +60,11 @@
         <article class="card is-active" data-ch="0">
           <h1 data-i18n="ch1.title">A green valley in the city</h1>
           <p class="lede" data-i18n="ch1.text"></p>
-          <dl class="facts">
-            <div><dt>3</dt><dd data-i18n="ch1.f1">towers</dd></div>
-            <div><dt>272</dt><dd data-i18n="ch1.f2">apartments</dd></div>
-            <div><dt data-num="1.3">1.3</dt><dd data-i18n="ch1.f3">ha garden</dd></div>
-          </dl>
+          <p class="facts-row" data-i18n="hero.facts"></p>
+          <div class="hero-actions">
+            <button type="button" class="btn btn-cta" data-jump-t="40.2"><span data-i18n="hero.cta">Choose your floor</span></button>
+            <button type="button" class="btn-link" data-visit data-i18n="cta.short">Book a visit</button>
+          </div>
           <p class="meta" data-i18n="hero.meta">Concept project · Tashkent</p>
         </article>
 
@@ -92,9 +92,6 @@
         <article class="card" data-ch="3">
           <h2 data-i18n="ch4.title"></h2>
           <p class="lede" data-i18n="ch4.text"></p>
-          <dl class="facts">
-            <div><dt>380</dt><dd data-i18n="am.parkingN"></dd></div>
-          </dl>
         </article>
 
         <article class="card card-wide" data-ch="4">

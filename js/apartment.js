@@ -10,8 +10,8 @@ export const AW = 15, AD = 6.3, WH = 2.85;
 
 export const ROOMS = [
   { k: 'rm.living', x: 0, p: 0, w: 6.6, d: 6.3, floor: 'wood', at: [3.6, 2.3] },
-  { k: 'rm.bed1', x: 6.6, p: 0, w: 4.4, d: 3.5, floor: 'wood', at: [8.8, 1.6] },
-  { k: 'rm.bed2', x: 11, p: 0, w: 4, d: 3.5, floor: 'wood', at: [12.6, 1.8] },
+  { k: 'rm.bed1', x: 6.6, p: 0, w: 4.4, d: 3.5, floor: 'wood', at: [8.5, 2.1] },
+  { k: 'rm.bed2', x: 11, p: 0, w: 4, d: 3.5, floor: 'wood', at: [13.2, 1.3] },
   { k: 'rm.hall', x: 6.6, p: 3.5, w: 8.4, d: 1.2, floor: 'wood', at: [7.8, 4.6], area: 13.9 },
   { k: null, x: 6.6, p: 4.7, w: 2.4, d: 1.6, floor: 'tile' },
   { k: 'rm.ward', x: 9, p: 4.7, w: 2.6, d: 1.6, floor: 'wood', at: [10.3, 5.5] },

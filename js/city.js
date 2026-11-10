@@ -255,12 +255,12 @@ export function buildCity({ eco, maxAniso }) {
   const treeMat = std('#ffffff', 0.92, 0, { vertexColors: true });
   const treeMesh = new THREE.InstancedMesh(treeGeometry(), treeMat, trees.length);
   const q = new THREE.Quaternion(), p = new THREE.Vector3(), sc = new THREE.Vector3(), col = new THREE.Color();
-  const greens = ['#5f7f3f', '#6b8a45', '#557437', '#7a9450', '#4f6e3a'].map(c => new THREE.Color(c));
+  const greens = ['#5f7f3f', '#6b8a45', '#b8892f', '#557437', '#c99a3c', '#7a9450', '#a2732a'].map(c => new THREE.Color(c));
   trees.forEach((tr, i) => {
     q.setFromAxisAngle(new THREE.Vector3(0, 1, 0), R() * 6.28);
     m4.compose(p.set(tr[0], 0, tr[1]), q, sc.setScalar(tr[2]));
     treeMesh.setMatrixAt(i, m4);
-    treeMesh.setColorAt(i, col.copy(greens[i % 5]).multiplyScalar(0.85 + R() * 0.3));
+    treeMesh.setColorAt(i, col.copy(greens[i % greens.length]).multiplyScalar(0.85 + R() * 0.3));
   });
   treeMesh.castShadow = !eco; treeMesh.receiveShadow = true;
   group.add(treeMesh);
@@ -326,7 +326,7 @@ export function buildCity({ eco, maxAniso }) {
   }
 
   // walking routes (location chapter): flat ribbons, revealed by drawRange
-  const routeMat = new THREE.MeshBasicMaterial({ color: new THREE.Color('#ffc768').multiplyScalar(1.6), transparent: true, opacity: 0.95, depthWrite: false });
+  const routeMat = new THREE.MeshBasicMaterial({ color: new THREE.Color('#3fb6ab').multiplyScalar(1.5), transparent: true, opacity: 0.95, depthWrite: false });
   const routes = ROUTE_PATHS.map(path => {
     const pts = [];
     for (let i = 0; i < path.length - 1; i++) {
@@ -354,7 +354,7 @@ export function buildCity({ eco, maxAniso }) {
   });
 
   // pins: thin light beams over each place
-  const beamMat = new THREE.MeshBasicMaterial({ color: new THREE.Color('#ffd58a').multiplyScalar(1.4), transparent: true, opacity: 0, depthWrite: false });
+  const beamMat = new THREE.MeshBasicMaterial({ color: new THREE.Color('#5cc6bb').multiplyScalar(1.3), transparent: true, opacity: 0, depthWrite: false });
   const beams = [];
   for (const k of Object.keys(POI)) {
     const b = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.7, 60, 8).translate(0, 30, 0), beamMat);
