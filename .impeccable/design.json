@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-10T00:00:00Z",
+  "title": "Design System: Yashil Vodiy Residence",
+  "extensions": {
+    "colorMeta": {
+      "gold": { "role": "primary", "displayName": "Chinar Gold", "canonical": "#e39a2d", "tonalRamp": ["#3a2408", "#5c3a0f", "#8a5816", "#b8771f", "#e39a2d", "#f0b04e", "#f6cd8c", "#fbe9cc"] },
+      "gold-hi": { "role": "primary", "displayName": "Sun Gold", "canonical": "#f0b04e", "tonalRamp": ["#3d2a0c", "#634515", "#8f6620", "#bf892f", "#f0b04e", "#f4c477", "#f8d9a6", "#fcefd8"] },
+      "aryk-light": { "role": "secondary", "displayName": "Aryk Water Light", "canonical": "#7fcbc2", "tonalRamp": ["#0e2a27", "#174541", "#21625c", "#2c8a86", "#52aaa3", "#7fcbc2", "#b0e0da", "#e0f4f1"] },
+      "shade": { "role": "neutral", "displayName": "Shade Ink", "canonical": "#10221f", "tonalRamp": ["#0a1614", "#10221f", "#172e29", "#22413a", "#3a5b53", "#62827a", "#9fb5ae", "#dde7e3"] },
+      "shade-2": { "role": "neutral", "displayName": "Shade Lifted", "canonical": "#172e29", "tonalRamp": ["#0a1614", "#10221f", "#172e29", "#22413a", "#3a5b53", "#62827a", "#9fb5ae", "#dde7e3"] },
+      "shade-3": { "role": "neutral", "displayName": "Shade Edge", "canonical": "#22413a", "tonalRamp": ["#0a1614", "#10221f", "#172e29", "#22413a", "#3a5b53", "#62827a", "#9fb5ae", "#dde7e3"] },
+      "bark": { "role": "neutral", "displayName": "Plane-Tree Bone", "canonical": "#dcdcc6", "tonalRamp": ["#2a2b22", "#4a4b3c", "#6e7058", "#959879", "#b9bc9d", "#cdcfb5", "#dcdcc6", "#f0efe2"] },
+      "bark-2": { "role": "neutral", "displayName": "Bark Sage", "canonical": "#cdcfb5", "tonalRamp": ["#2a2b22", "#4a4b3c", "#6e7058", "#959879", "#b9bc9d", "#cdcfb5", "#dcdcc6", "#f0efe2"] },
+      "bark-light": { "role": "neutral", "displayName": "Peeled Bark", "canonical": "#e8e7d6", "tonalRamp": ["#2a2b22", "#4a4b3c", "#6e7058", "#959879", "#cdcfb5", "#dcdcc6", "#e8e7d6", "#f3f2e6"] },
+      "on-shade": { "role": "neutral", "displayName": "Bone Ink", "canonical": "#e9e9d8" },
+      "on-shade-2": { "role": "neutral", "displayName": "Bone Ink Muted", "canonical": "rgba(233, 233, 216, .76)" },
+      "on-bark-2": { "role": "neutral", "displayName": "Shade Muted", "canonical": "#2a3732" },
+      "rule-dark": { "role": "neutral", "displayName": "Rule Dark", "canonical": "rgba(16, 34, 31, .28)" },
+      "rule-light": { "role": "neutral", "displayName": "Rule Light", "canonical": "rgba(233, 233, 216, .2)" },
+      "error": { "role": "neutral", "displayName": "Brick Error", "canonical": "#a5391f", "tonalRamp": ["#2a0e08", "#4d1a0e", "#792815", "#a5391f", "#c45a3f", "#d98670", "#ebb6a8", "#f8e4de"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Section headlines and the story's opening headline; Geologica SHRP 100, balanced wrap." },
+      "headline": { "displayName": "Headline", "purpose": "Story chapter titles inside the cards." },
+      "title": { "displayName": "Title", "purpose": "Layout names, trust terms, dialog title." },
+      "numeral": { "displayName": "Numeral", "purpose": "Chosen floor, monthly payment, build date, clock, stepper; tabular lining figures." },
+      "body": { "displayName": "Body", "purpose": "Reading text in Golos Text; ledes 40-60ch." },
+      "label": { "displayName": "Label", "purpose": "Buttons, chips, toggles, scene tags, rail labels; sentence case." }
+    },
+    "shadows": [
+      { "name": "scene-panel", "value": "0 18px 40px -18px rgba(0, 0, 0, .55)", "purpose": "Story cards floating over the 3D stage." },
+      { "name": "dialog", "value": "0 30px 70px -30px rgba(0, 0, 0, .6)", "purpose": "Booking sheet over a 72% shade backdrop." },
+      { "name": "legibility-text", "value": "0 1px 8px rgba(0, 0, 0, .6)", "purpose": "Text-shadow for the scroll hint over the scene." },
+      { "name": "legibility-tick", "value": "0 1px 4px rgba(0, 0, 0, .35)", "purpose": "Chapter ticks and step bars over the scene." }
+    ],
+    "motion": [
+      { "name": "ease-settle", "value": "cubic-bezier(.16, 1, .3, 1)", "purpose": "Card entry, leaf-light drift, scroll-hint drip." },
+      { "name": "card-change", "value": ".45s", "purpose": "Story card fade and 12px rise on chapter change." },
+      { "name": "leaf-light", "value": ".6s", "purpose": "Leaf-light position and opacity following the sun." },
+      { "name": "state", "value": ".15s", "purpose": "Button background, colour and border transitions." },
+      { "name": "reduced-motion", "value": ".2s linear opacity only", "purpose": "Cards and leaf light under prefers-reduced-motion; loader and hint animations stop." }
+    ],
+    "breakpoints": [
+      { "name": "lg", "value": "1100px" },
+      { "name": "md", "value": "860px" },
+      { "name": "sm", "value": "759px" },
+      { "name": "xs", "value": "440px" },
+      { "name": "short-landscape", "value": "max-height 520px, landscape" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one gold action per view, with a CSS-drawn chevron.",
+      "html": "<button class=\"ds-btn ds-btn-cta\">Choose your floor</button>",
+      "css": ".ds-btn { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 20px; border: 1.5px solid transparent; border-radius: 2px; font: 600 .95rem/1 Geologica, 'Golos Text', system-ui, sans-serif; font-variation-settings: 'SHRP' 100; cursor: pointer; transition: background .15s, color .15s, border-color .15s; } .ds-btn-cta { background: #e39a2d; color: #10221f; } .ds-btn-cta::after { content: ''; width: 8px; height: 8px; border-top: 1.5px solid currentColor; border-right: 1.5px solid currentColor; transform: rotate(45deg) translate(-1px, 1px); } .ds-btn-cta:hover { background: #f0b04e; } .ds-btn-cta:focus-visible { outline: 1.5px solid #10221f; outline-offset: 3px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary action on bark; inverts to shade on hover.",
+      "html": "<button class=\"ds-btn-ghost\">Plan details</button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; background: transparent; color: #10221f; border: 1.5px solid #10221f; border-radius: 2px; font: 600 .95rem/1 Geologica, 'Golos Text', system-ui, sans-serif; font-variation-settings: 'SHRP' 100; cursor: pointer; transition: background .15s, color .15s; } .ds-btn-ghost:hover { background: #10221f; color: #dcdcc6; } .ds-btn-ghost:focus-visible { outline: 1.5px solid #10221f; outline-offset: 3px; }"
+    },
+    {
+      "name": "Light Button",
+      "kind": "button",
+      "refersTo": "button-light",
+      "description": "Secondary action on shade panels.",
+      "html": "<div style=\"background:#10221f;padding:16px\"><button class=\"ds-btn-light\">See this floor</button></div>",
+      "css": ".ds-btn-light { min-height: 44px; padding: 0 20px; background: transparent; color: #e9e9d8; border: 1.5px solid rgba(233,233,216,.2); border-radius: 2px; font: 600 .95rem/1 Geologica, 'Golos Text', system-ui, sans-serif; font-variation-settings: 'SHRP' 100; cursor: pointer; transition: border-color .15s; } .ds-btn-light:hover { border-color: #e9e9d8; } .ds-btn-light:focus-visible { outline: 1.5px solid #e39a2d; outline-offset: 3px; }"
+    },
+    {
+      "name": "Ruled Toggle",
+      "kind": "chip",
+      "refersTo": "toggle-selected",
+      "description": "Shared-border toggle board; selected inverts to bone, never gold.",
+      "html": "<div style=\"background:#10221f;padding:16px\"><div class=\"ds-seg\"><button aria-pressed=\"true\">Summer</button><button aria-pressed=\"false\">Winter</button></div></div>",
+      "css": ".ds-seg { display: grid; grid-template-columns: 1fr 1fr; border: 1.5px solid rgba(233,233,216,.2); width: 240px; } .ds-seg button { border: 0; background: transparent; min-height: 44px; font: 600 .88rem/1 Geologica, 'Golos Text', system-ui, sans-serif; color: rgba(233,233,216,.76); cursor: pointer; } .ds-seg button + button { border-left: 1.5px solid rgba(233,233,216,.2); } .ds-seg button:hover { background: #172e29; color: #e9e9d8; } .ds-seg button[aria-pressed=\"true\"] { background: #e9e9d8; color: #10221f; } .ds-seg button:focus-visible { outline: 1.5px solid #e39a2d; outline-offset: 3px; }"
+    },
+    {
+      "name": "Booking Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Square 46px field with a 1.5px shade border on bark.",
+      "html": "<div style=\"background:#e8e7d6;padding:16px\"><label class=\"ds-field\"><span>Your name</span><input type=\"text\" placeholder=\"Dilnoza\"></label></div>",
+      "css": ".ds-field { display: grid; gap: 6px; } .ds-field span { font: 500 .84rem/1.3 'Golos Text', system-ui, sans-serif; color: #2a3732; } .ds-field input { height: 46px; border: 1.5px solid #10221f; border-radius: 0; background: #f3f2e6; color: #10221f; padding: 0 14px; font: 400 16px 'Golos Text', system-ui, sans-serif; } .ds-field input:focus-visible { outline: 1.5px solid #10221f; outline-offset: 2px; } .ds-field input[aria-invalid=\"true\"] { border-color: #a5391f; }"
+    },
+    {
+      "name": "Header",
+      "kind": "nav",
+      "refersTo": "header",
+      "description": "56px solid shade bar with gold leaf mark, wordmark, links and a ruled language switch.",
+      "html": "<header class=\"ds-hdr\"><span class=\"ds-word\">Yashil Vodiy</span><nav class=\"ds-nav\"><a href=\"#\">Layouts</a><a href=\"#\">Payment</a></nav><div class=\"ds-langs\"><button aria-pressed=\"true\">UZ</button><button>RU</button><button>EN</button></div></header>",
+      "css": ".ds-hdr { height: 56px; display: flex; align-items: center; gap: 30px; padding: 0 24px; background: #10221f; color: #e9e9d8; border-bottom: 1.5px solid #22413a; } .ds-word { font: 700 1.12rem/1 Geologica, sans-serif; font-variation-settings: 'SHRP' 100; letter-spacing: -.02em; } .ds-nav { display: flex; gap: 24px; } .ds-nav a { color: rgba(233,233,216,.76); text-decoration: none; font: 400 .9rem 'Golos Text', sans-serif; padding: 6px 0; border-bottom: 1.5px solid transparent; } .ds-nav a:hover { color: #e9e9d8; border-bottom-color: #e39a2d; } .ds-nav a:focus-visible { outline: 1.5px solid #e39a2d; outline-offset: 3px; } .ds-langs { margin-left: auto; display: flex; border: 1.5px solid rgba(233,233,216,.2); } .ds-langs button { border: 0; background: transparent; min-width: 40px; min-height: 36px; font: 600 .78rem/1 Geologica, sans-serif; letter-spacing: .04em; color: rgba(233,233,216,.76); cursor: pointer; } .ds-langs button + button { border-left: 1.5px solid rgba(233,233,216,.2); } .ds-langs button[aria-pressed=\"true\"] { background: #e9e9d8; color: #10221f; }"
+    },
+    {
+      "name": "Story Card with Leaf Light",
+      "kind": "card",
+      "refersTo": "story-card",
+      "description": "Solid shade panel over the 3D scene; gold leaf light along the top margin and right edge, driven by --sx, --sy and --sun.",
+      "html": "<article class=\"ds-card\"><h2>Watch your floor go up.</h2><p>Planned dates look planned; finished work looks finished.</p></article>",
+      "css": ".ds-card { --sx: 0px; --sy: 0px; --sun: .8; position: relative; width: 400px; padding: 56px 30px 24px; background: #10221f; color: #e9e9d8; border: 1.5px solid #22413a; border-radius: 2px; overflow: hidden; box-shadow: 0 18px 40px -18px rgba(0,0,0,.55); } .ds-card::before, .ds-card::after { content: ''; position: absolute; background: url('../assets/chinar-leaves.jpg') calc(50% + var(--sx)) 30% / 640px auto; filter: grayscale(1) sepia(1) saturate(2.6) hue-rotate(-8deg) brightness(1.05) contrast(1.25); mix-blend-mode: screen; pointer-events: none; opacity: calc(var(--sun) * .95); transition: background-position .6s cubic-bezier(.16,1,.3,1), opacity .6s; } .ds-card::before { left: 0; right: 0; top: 0; height: 40px; } .ds-card::after { top: 40px; right: 0; bottom: 0; width: 22px; background-position: calc(30% + var(--sx)) calc(60% + var(--sy)); } .ds-card > * { position: relative; } .ds-card h2 { margin: 0 0 16px; font: 700 2.2rem/1.04 Geologica, sans-serif; font-variation-settings: 'SHRP' 100; letter-spacing: -.025em; } .ds-card p { margin: 0; color: rgba(233,233,216,.76); font: 400 1rem/1.55 'Golos Text', sans-serif; max-width: 40ch; }"
+    },
+    {
+      "name": "Layout Card",
+      "kind": "card",
+      "refersTo": "layout-card",
+      "description": "Peeled-bark cell in a shared-border grid with a line-drawn plan.",
+      "html": "<div class=\"ds-lay\"><div class=\"ds-lay-plan\"></div><div class=\"ds-lay-body\"><h3>2 rooms</h3><b>58 m²</b><span>from 612 mln so'm</span></div></div>",
+      "css": ".ds-lay { width: 260px; display: flex; flex-direction: column; border: 1.5px solid #10221f; background: #e8e7d6; color: #10221f; transition: background .2s; } .ds-lay:hover { background: #f0efe2; } .ds-lay-plan { height: 170px; border-bottom: 1.5px solid #10221f; background: linear-gradient(rgba(227,154,45,.22), rgba(227,154,45,.22)) 24px 24px / 60px 40px no-repeat; } .ds-lay-body { padding: 24px; display: grid; gap: 4px; } .ds-lay-body h3 { margin: 0; font: 700 1.6rem/1.04 Geologica, sans-serif; font-variation-settings: 'SHRP' 100; letter-spacing: -.025em; } .ds-lay-body b { font: 600 1rem/1.3 Geologica, sans-serif; font-variant-numeric: tabular-nums; } .ds-lay-body span { color: #2a3732; font: 400 .95rem 'Golos Text', sans-serif; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Under the Chinar Avenue in November",
+    "overview": "The interface stands in the shade of a Tashkent plane-tree avenue late in the year. Light grounds are the plane tree's camouflage bark, carried as a real photograph under a flat bone tint; text, panels, header and the bands between sections are deep shade ink. Chinar gold is the only warm colour and it behaves like sunlight: it lands where the buyer acts or has chosen. Aryk teal belongs to water, routes and \"available\".\n\nThe system is hard and economical. One line weight (1.5 px) draws every rule, border, focus ring and underline. Corners are square or a 2 px hair. Space comes from a 24 px module and its multiples. Panels are solid, never glass; nothing blurs. The 3D scene carries the atmosphere, and the UI over it stays legible, opaque and still.\n\nThe signature is sunlight through leaves: a backlit chinar-leaf photograph, turned to gold light, runs along the top margin and right edge of the dark panels. On the scroll story it is driven by the scene's sun, so it moves with the sun's azimuth and dims with its height.",
+    "keyCharacteristics": [
+      "Bark-and-shade palette with gold as the single warm signal.",
+      "One 1.5 px line weight for every stroke.",
+      "Square or 2 px corners; solid opaque panels.",
+      "24 px module; sections separated by 48 px solid shade bands.",
+      "Geologica with sharp terminals (SHRP 100) for display and numbers, Golos Text for reading.",
+      "Gold leaf-light along panel margins, coupled to the 3D sun."
+    ],
+    "rules": [
+      { "name": "The One Warm Colour Rule", "body": "Gold appears only where the buyer acts or has chosen: primary action, chosen floor, selected flat, active chapter, slider thumb. Selected toggles that are not the buyer's decision (language, season, instalment term) invert to bone on shade instead.", "section": "colors" },
+      { "name": "The Water-Only Teal Rule", "body": "Teal means water, routes or \"available\". It is never a button, link or decoration colour.", "section": "colors" },
+      { "name": "The Sharp Numbers Rule", "body": "Every figure the buyer compares (floor, price, area, date, time, phone) is set in Geologica with tabular lining numerals.", "section": "typography" },
+      { "name": "The Sentence-Case Rule", "body": "No uppercase labels and no tracked-out small caps; labels carry at most .04em tracking.", "section": "typography" },
+      { "name": "The Solid Panel Rule", "body": "Anything over the scene is opaque shade with a shade-edge border; the scene never shows through UI.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do draw every rule, border, underline and focus ring at 1.5 px.",
+      "Do reserve gold for the primary action, chosen floor, selected flat, active chapter and slider thumb.",
+      "Do set compared figures in Geologica with tabular lining numerals and SHRP 100.",
+      "Do keep panels over the 3D scene solid shade with a shade-edge border.",
+      "Do separate bark sections from the previous section with a 48 px solid shade band.",
+      "Do carry the bark ground as the photo under a flat 80% bone tint, falling back to bone.",
+      "Do use the leaf light on dark panels only, along the top margin and right edge, never behind copy."
+    ],
+    "donts": [
+      "Don't use glass, backdrop blur or decorative colour gradients; the only gradients are the flat bark tint and the planned-schedule hatch.",
+      "Don't use teal for actions, links or decoration.",
+      "Don't round corners beyond 2 px.",
+      "Don't use hard offset shadows; shadows are soft and only over the scene or under the dialog.",
+      "Don't set uppercase or widely tracked labels."
+    ]
+  }
+}

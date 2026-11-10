@@ -69,6 +69,17 @@ python3 -m http.server 8000
 
 Then open http://localhost:8000. Add `?debug` to expose `window.__world`. `__world.go(t)` jumps to any moment of the story.
 
+## Design
+
+The visual identity is "Chinar avenue in November": plane-tree bark grounds, solid shade panels, chinar gold as the only warm signal, Geologica (sharp terminals) for display and Golos Text for reading. See `DESIGN.md` for the system and `PRODUCT.md` for the product facts it serves.
+
+## Photo credits
+
+Both photos come from Wikimedia Commons under CC BY-SA 4.0. They are cropped, resized and tinted on the page, and that adaptation is shared under the same licence.
+
+- Plane-tree bark: [City of London Cemetery London plane tree trunk bark 1](https://commons.wikimedia.org/wiki/File:City_of_London_Cemetery_London_plane_tree_trunk_bark_1.jpg) by Acabashi
+- Chinar leaves: [Platanus orientalis kz02](https://commons.wikimedia.org/wiki/File:Platanus_orientalis_kz02.jpg) by Krzysztof Ziarnek, Kenraiz
+
 ## Related
 
 - [Falak watch story](https://github.com/akbarov-labs/falak-watch-story): the same technique for a luxury watch
