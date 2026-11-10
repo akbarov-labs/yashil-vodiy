@@ -52,7 +52,7 @@ export function start({ reduce = false, onFail } = {}) {
   scene.add(city.group, complex.group, apt.group);
 
   const pmrem = new THREE.PMREMGenerator(renderer);
-  let envRT = null, envEl = 999, envTime = 0, envPending = false;
+  let envRT = null, envEl = 999;
   function regenEnv() {
     const rt = pmrem.fromScene(sky.envScene, 0.02, 0.1, 1000);
     if (envRT) envRT.dispose();
@@ -224,6 +224,7 @@ export function start({ reduce = false, onFail } = {}) {
 
   // ---------- camera ----------
   const tgt = new THREE.Vector3(), camPos = new THREE.Vector3(), shadowC = new THREE.Vector3();
+  const lightBasis = new THREE.Matrix4(), lightBasisInv = new THREE.Matrix4(), ORIGIN = new THREE.Vector3(), UP = new THREE.Vector3(0, 1, 0);
   let camDist = 100;
   function setCamera(t, windowK) {
     const rows = camRows;
@@ -246,7 +247,7 @@ export function start({ reduce = false, onFail } = {}) {
     camera.lookAt(tgt);
     const phone = stage.clientWidth < 760;
     camera.fov = (phone ? 52 : 42) + 12 * windowK;
-    camera.near = Math.min(2, Math.max(0.06, camDist * 0.0035));
+    camera.near = Math.min(12, Math.max(0.05, camDist * 0.01 * (1 - 0.92 * windowK)));
     camera.updateProjectionMatrix();
     camera.updateMatrixWorld();
   }
@@ -286,10 +287,7 @@ export function start({ reduce = false, onFail } = {}) {
     scene.environmentIntensity = S.envInt * (1 - 0.62 * inside);
     scene.fog.color.copy(S.fog);
     renderer.toneMappingExposure = S.exposure;
-    if (Math.abs(sa.el - envEl) > 1.0) {
-      if (now - envTime > 150 || envEl === 999) { regenEnv(); envEl = sa.el; envTime = now; envPending = false; }
-      else envPending = true;
-    } else envPending = false;
+    if (Math.abs(sa.el - envEl) > 0.4) { regenEnv(); envEl = sa.el; }
 
     // buildings
     const p = D.track(D.BUILD, t);
@@ -307,13 +305,21 @@ export function start({ reduce = false, onFail } = {}) {
     setCamera(t, windowK);
     sky.mesh.position.copy(camera.position);
     sky.stars.position.copy(camera.position);
-    const half = Math.min(320, Math.max(11, camDist * 0.6, windowK * 26));
+    const half0 = Math.min(320, Math.max(11, camDist * 0.6, windowK * 26));
+    const half = Math.pow(2, Math.ceil(Math.log2(half0) * 2) / 2);
     shadowC.copy(tgt).lerp(camPos, windowK * 0.85);
+    const texel = (2 * half) / sun.shadow.mapSize.x;
+    lightBasis.lookAt(lightDir, ORIGIN, UP);
+    lightBasisInv.copy(lightBasis).transpose();
+    shadowC.applyMatrix4(lightBasisInv);
+    shadowC.x = Math.round(shadowC.x / texel) * texel;
+    shadowC.y = Math.round(shadowC.y / texel) * texel;
+    shadowC.applyMatrix4(lightBasis);
     const sc = sun.shadow.camera;
     sc.left = sc.bottom = -half; sc.right = sc.top = half; sc.updateProjectionMatrix();
     sun.position.copy(shadowC).addScaledVector(lightDir, 700);
     sun.target.position.copy(shadowC);
-    sun.shadow.normalBias = half / 2048 * 1.6;
+    sun.shadow.normalBias = texel * 0.8;
 
     updateLabels(t);
     if (chIdx === 2) updateBuild(p);
@@ -337,7 +343,7 @@ export function start({ reduce = false, onFail } = {}) {
     else { time += (target - time) * (1 - Math.exp(-dt * 5)); if (Math.abs(target - time) < 0.002) time = target; }
     if (time !== drawnT || dirty) { render(time, now); drawnT = time; dirty = false; }
     $('#hint').classList.toggle('gone', time > 0.35);
-    if (time !== target || envPending) schedule();
+    if (time !== target) schedule();
   }
   function schedule() { if (!raf && visible && !document.hidden) { last = performance.now(); raf = requestAnimationFrame(frame); } }
   function invalidate() { dirty = true; schedule(); }

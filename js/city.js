@@ -144,7 +144,7 @@ export function buildCity({ eco, maxAniso }) {
   ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true;
   group.add(ground);
   const outer = new THREE.Mesh(new THREE.PlaneGeometry(40000, 40000), std('#a6a690', 1));
-  outer.rotation.x = -Math.PI / 2; outer.position.y = -0.08; outer.receiveShadow = false;
+  outer.rotation.x = -Math.PI / 2; outer.position.y = -3; outer.receiveShadow = false;
   group.add(outer);
 
   // context buildings
@@ -219,7 +219,7 @@ export function buildCity({ eco, maxAniso }) {
 
   // park pond
   const water = new THREE.Mesh(new THREE.CircleGeometry(1, 48), std('#3b6c7d', 0.06, 0.3));
-  water.rotation.x = -Math.PI / 2; water.scale.set(46, 26, 1); water.position.set(-150, 0.06, 215);
+  water.rotation.x = -Math.PI / 2; water.scale.set(46, 26, 1); water.position.set(-150, 0.3, 215);
   group.add(water);
 
   // trees
