@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Yashil Vodiy Residence · Concept</title>
+<meta name="description" content="Concept website for a fictional residential complex in Tashkent: a scroll-driven 3D story by Akbarov Labs.">
+<meta name="theme-color" content="#13221a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231f3a2c'/%3E%3Cpath d='M6 22c4-1 7-5 10-12 3 7 6 11 10 12' fill='none' stroke='%23e8d9b8' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<a class="skip" href="#layouts" data-i18n="skip">Skip the 3D tour</a>
+
+<header class="hdr" id="hdr">
+  <a class="brand" href="#top" aria-label="Yashil Vodiy Residence">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="currentColor" opacity=".14"/><path d="M6 22c4-1 7-5 10-12 3 7 6 11 10 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M11 22c2-.6 3.6-2.4 5-5.4 1.4 3 3 4.8 5 5.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".6"/></svg>
+    <span class="wordmark">Yashil Vodiy<small data-i18n="brand.sub">Residence</small></span>
+  </a>
+  <nav class="nav" aria-label="Sections">
+    <a href="#story" data-jump="1" data-i18n="nav.location">Location</a>
+    <a href="#story" data-jump="2" data-i18n="nav.construction">Construction</a>
+    <a href="#layouts" data-i18n="nav.apartments">Apartments</a>
+    <a href="#payment" data-i18n="nav.payment">Payment</a>
+  </nav>
+  <div class="hdr-right">
+    <div class="langs" role="group" aria-label="Language">
+      <button type="button" data-lang="uz">UZ</button><button type="button" data-lang="ru">RU</button><button type="button" data-lang="en">EN</button>
+    </div>
+    <button type="button" class="btn btn-cta" data-visit data-i18n="cta.short">Book a visit</button>
+  </div>
+  <i class="chbar" id="chbar" aria-hidden="true"></i>
+</header>
+
+<main id="top">
+  <section class="story" id="story" aria-label="Yashil Vodiy Residence">
+    <div class="stage" id="stage">
+      <canvas id="gl" aria-hidden="true"></canvas>
+      <div class="poster" aria-hidden="true"></div>
+      <div class="labels" id="labels" aria-hidden="true"></div>
+      <div class="viewtag" id="viewTag" aria-hidden="true"></div>
+      <div class="loader" id="loader" role="status"><span data-i18n="load">Loading the 3D tour</span><i></i></div>
+
+      <div class="fallback-note" id="fbNote" hidden>
+        <p id="fbText"></p>
+        <button type="button" class="btn btn-light" id="fbBtn" data-i18n="fb.btn">Load the 3D tour</button>
+      </div>
+
+      <div class="cards">
+        <article class="card is-active" data-ch="0">
+          <p class="eyebrow" data-i18n="hero.eyebrow">Concept residential complex · Tashkent</p>
+          <h1 data-i18n="ch1.title">A green valley in the city</h1>
+          <p class="lede" data-i18n="ch1.text"></p>
+          <dl class="facts">
+            <div><dt>3</dt><dd data-i18n="ch1.f1">towers</dd></div>
+            <div><dt>272</dt><dd data-i18n="ch1.f2">apartments</dd></div>
+            <div><dt data-num="1.3">1.3</dt><dd data-i18n="ch1.f3">ha garden</dd></div>
+          </dl>
+        </article>
+
+        <article class="card" data-ch="1">
+          <p class="eyebrow"><span class="n">02</span><span data-i18n="ch2.eyebrow"></span></p>
+          <h2 data-i18n="ch2.title"></h2>
+          <p class="lede" data-i18n="ch2.text"></p>
+          <ul class="poilist">
+            <li><b data-i18n="poi.metro"></b><span data-i18n="poi.metroT"></span></li>
+            <li><b data-i18n="poi.school"></b><span data-i18n="poi.schoolT"></span></li>
+            <li><b data-i18n="poi.park"></b><span data-i18n="poi.parkT"></span></li>
+            <li><b data-i18n="poi.mall"></b><span data-i18n="poi.mallT"></span></li>
+          </ul>
+        </article>
+
+        <article class="card" data-ch="2">
+          <p class="eyebrow"><span class="n">03</span><span data-i18n="ch3.eyebrow"></span></p>
+          <h2 data-i18n="ch3.title"></h2>
+          <p class="lede" data-i18n="ch3.text"></p>
+          <div class="build">
+            <div class="build-top"><strong id="bDate">Q3 2025</strong><span id="bStage"></span></div>
+            <div class="build-bar"><i id="bFill"></i><b id="bToday"><span data-i18n="build.today">Today</span></b></div>
+            <p class="build-pct" id="bPct"></p>
+          </div>
+        </article>
+
+        <article class="card" data-ch="3">
+          <p class="eyebrow"><span class="n">04</span><span data-i18n="ch4.eyebrow"></span></p>
+          <h2 data-i18n="ch4.title"></h2>
+          <p class="lede" data-i18n="ch4.text"></p>
+          <dl class="facts">
+            <div><dt>380</dt><dd data-i18n="am.parking"></dd></div>
+          </dl>
+        </article>
+
+        <article class="card card-wide" data-ch="4">
+          <p class="eyebrow"><span class="n">05</span><span data-i18n="ch5.eyebrow"></span></p>
+          <h2 data-i18n="ch5.title"></h2>
+          <p class="lede" data-i18n="ch5.text"></p>
+          <div class="floorpick">
+            <div class="fp-head">
+              <button type="button" class="fp-step" id="fpDown" data-i18n-aria="fp.down">−</button>
+              <div class="fp-floor"><span class="fp-label" data-i18n="fp.floor">Floor</span><strong id="fpNum">9</strong><span class="fp-of" id="fpOf"></span></div>
+              <button type="button" class="fp-step" id="fpUp" data-i18n-aria="fp.up">+</button>
+            </div>
+            <p class="fp-meta" id="fpMeta"></p>
+            <ul class="fp-flats" id="fpFlats"></ul>
+            <button type="button" class="btn btn-light fp-go" id="fpGo"><span data-i18n="fp.go"></span> <span aria-hidden="true">↓</span></button>
+            <p class="fp-hint" data-i18n="fp.hint"></p>
+          </div>
+        </article>
+
+        <article class="card" data-ch="5">
+          <p class="eyebrow"><span class="n">06</span><span data-i18n="ch6.eyebrow"></span></p>
+          <h2 data-i18n="ch6.title"></h2>
+          <p class="lede" data-i18n="ch6.text"></p>
+        </article>
+
+        <article class="card" data-ch="6">
+          <p class="eyebrow"><span class="n">07</span><span data-i18n="ch7.eyebrow"></span></p>
+          <h2 data-i18n="ch7.title"></h2>
+          <p class="lede" data-i18n="ch7.text"></p>
+          <div class="sun">
+            <div class="sun-top"><label for="sunRange" data-i18n="sun.time">Time of day</label><strong id="sunClock">13:00</strong></div>
+            <input type="range" id="sunRange" min="6" max="20" step="0.25" value="13">
+            <div class="seg" role="group">
+              <button type="button" data-season="0" data-i18n="sun.summer">Summer</button>
+              <button type="button" data-season="1" data-i18n="sun.winter">Winter</button>
+            </div>
+            <p class="sun-hours" id="sunHours"></p>
+          </div>
+        </article>
+      </div>
+
+      <ol class="rail" id="rail" aria-label="Chapters">
+        <li><button type="button"><span>01</span><em data-i18n="rail.home"></em></button></li>
+        <li><button type="button"><span>02</span><em data-i18n="ch2.eyebrow"></em></button></li>
+        <li><button type="button"><span>03</span><em data-i18n="ch3.eyebrow"></em></button></li>
+        <li><button type="button"><span>04</span><em data-i18n="ch4.eyebrow"></em></button></li>
+        <li><button type="button"><span>05</span><em data-i18n="ch5.eyebrow"></em></button></li>
+        <li><button type="button"><span>06</span><em data-i18n="ch6.eyebrow"></em></button></li>
+        <li><button type="button"><span>07</span><em data-i18n="ch7.eyebrow"></em></button></li>
+      </ol>
+      <div class="hint" id="hint" aria-hidden="true"><span data-i18n="scroll"></span><i></i></div>
+    </div>
+  </section>
+
+  <section class="sec layouts" id="layouts">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="eyebrow dark" data-i18n="lay.eyebrow"></p>
+        <h2 data-i18n="lay.title"></h2>
+        <p data-i18n="lay.text"></p>
+      </header>
+      <div class="lay-grid" id="layGrid"></div>
+    </div>
+  </section>
+
+  <section class="sec pay" id="payment">
+    <div class="wrap pay-grid">
+      <div class="pay-copy">
+        <p class="eyebrow dark" data-i18n="pay.eyebrow"></p>
+        <h2 data-i18n="pay.title"></h2>
+        <p data-i18n="pay.text"></p>
+        <div class="field">
+          <span class="field-label" data-i18n="pay.layout"></span>
+          <div class="chips" id="payLayout" role="group"></div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="payDown"><span data-i18n="pay.down"></span> <b id="payDownPct">40%</b></label>
+          <input type="range" id="payDown" min="30" max="80" step="5" value="40">
+        </div>
+        <div class="field">
+          <span class="field-label" data-i18n="pay.term"></span>
+          <div class="chips" id="payTerm" role="group"></div>
+        </div>
+      </div>
+      <div class="pay-card" aria-live="polite">
+        <div class="pay-row"><span data-i18n="pay.price"></span><strong id="payPrice"></strong></div>
+        <div class="pay-row"><span data-i18n="pay.first"></span><strong id="payFirst"></strong></div>
+        <div class="pay-big"><span data-i18n="pay.monthly"></span><strong id="payMonthly"></strong><em id="payUsd"></em></div>
+        <p class="pay-note" data-i18n="pay.note"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec end">
+    <div class="wrap end-inner">
+      <h2 data-i18n="end.title"></h2>
+      <p data-i18n="end.text"></p>
+      <button type="button" class="btn btn-cta btn-lg" data-visit data-i18n="end.btn"></button>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-inner">
+    <p data-i18n="foot.concept"></p>
+    <p><span data-i18n="foot.made"></span> <a href="https://akbarovlabs.uz" rel="noopener">Akbarov Labs</a> · <a href="https://github.com/akbarov-labs/yashil-vodiy" rel="noopener" data-i18n="foot.how"></a></p>
+  </div>
+</footer>
+
+<dialog class="dlg" id="dlg" aria-labelledby="dlgTitle">
+  <h3 id="dlgTitle" data-i18n="dlg.title"></h3>
+  <p data-i18n="dlg.text"></p>
+  <div class="dlg-actions">
+    <a class="btn btn-cta" href="https://akbarovlabs.uz" rel="noopener" data-i18n="dlg.link"></a>
+    <button type="button" class="btn btn-ghost" id="dlgClose" data-i18n="dlg.close"></button>
+  </div>
+</dialog>
+
+<script type="module" src="js/page.js"></script>
+</body>
+</html>
