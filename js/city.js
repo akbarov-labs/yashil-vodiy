@@ -114,7 +114,7 @@ function windowMaterial(color) {
         float win = step(0.2, fc.x) * step(fc.x, 0.8) * step(0.3, fc.y) * step(fc.y, 0.85) * isWall * step(2.8, vWPos.y);
         float aa = clamp(1.6 - length(fwidth(cell)) * 2.2, 0.0, 1.0);
         float winA = mix(0.27 * isWall, win, aa);
-        diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.34, 0.39, 0.44), winA * 0.55);`)
+        diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.42, 0.46, 0.5), winA * 0.32);`)
       .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
         vec2 wid = floor(cell) + floor(vWPos.xz * 0.031) * 17.0;
         float hh = fract(sin(dot(wid, vec2(12.9898, 78.233))) * 43758.5453);
@@ -181,7 +181,7 @@ export function buildCity({ eco, maxAniso }) {
   }
   // school and mall buildings
   boxes.push([-245, -235, 60, 16, 9], [-268, -195, 14, 50, 9], [-222, -195, 14, 50, 9]);
-  const ctxMat = windowMaterial('#ebe6dc');
+  const ctxMat = windowMaterial('#e2e1dd');
   ctxMat.userData.uNight = night;
   const unitBox = new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0);
   const ctx = new THREE.InstancedMesh(unitBox, ctxMat, boxes.length);
@@ -321,7 +321,7 @@ export function buildCity({ eco, maxAniso }) {
     g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
     g.setAttribute('color', new THREE.Float32BufferAttribute(colArr, 3));
     g.setIndex(idx); g.computeVertexNormals();
-    const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide, fog: true }));
+    const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide, fog: false }));
     ridges.push(m); group.add(m);
   }
 
@@ -368,7 +368,8 @@ export function buildCity({ eco, maxAniso }) {
     headMesh.visible = S.night > 0.02;
     // fog-tinted mountains: lighter by day, near-black by night
     const mk = 0.25 + 0.75 * (1 - S.night);
-    ridges.forEach((r, i) => { r.material.color.setScalar(mk * (i ? 1.02 : 0.94)); });
+    // aerial perspective by hand: tint toward the haze colour, far ridge more than near
+    ridges.forEach((r, i) => { r.material.color.setRGB(1, 1, 1).lerp(S.fog, i ? 0.62 : 0.42).multiplyScalar(mk); });
     for (let i = 0; i < cars.length; i++) {
       const c = cars[i];
       let s = c.s0 + c.dir * c.v * t * 1.2;

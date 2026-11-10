@@ -78,7 +78,7 @@ function makeMaterials(maxAniso) {
   const S = (c, r = 0.85, m = 0, e = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: r, metalness: m, ...e });
   return {
     wall: S('#f1ede6', 0.93), cap: S('#3b3f3d', 0.85), slab: S('#e9e4da', 0.85),
-    wood: S('#ffffff', 0.62, 0, { map: wood }), tile: S('#ffffff', 0.35, 0, { map: tile }), deck: S('#cfc6b6', 0.85),
+    wood: S('#ffffff', 0.62, 0, { map: wood }), tile: S('#ffffff', 0.35, 0, { map: tile }), deck: S('#a8896b', 0.78, 0, { map: wood }),
     front: S('#8d9b86', 0.55), front2: S('#d9cab2', 0.6), quartz: S('#efece6', 0.3), black: S('#1f2123', 0.5),
     metal: S('#9ea3a6', 0.3, 0.9), brass: S('#b8945a', 0.32, 0.85), oak: S('#b88b5d', 0.6), walnut: S('#6b4b34', 0.55),
     white: S('#f4f2ee', 0.6), oat: S('#d8cdbb', 0.95), olive: S('#6f7b57', 0.95), terra: S('#b6694a', 0.95),

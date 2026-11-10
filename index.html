@@ -58,7 +58,6 @@
 
       <div class="cards">
         <article class="card is-active" data-ch="0">
-          <p class="eyebrow" data-i18n="hero.eyebrow">Concept residential complex · Tashkent</p>
           <h1 data-i18n="ch1.title">A green valley in the city</h1>
           <p class="lede" data-i18n="ch1.text"></p>
           <dl class="facts">
@@ -66,10 +65,10 @@
             <div><dt>272</dt><dd data-i18n="ch1.f2">apartments</dd></div>
             <div><dt data-num="1.3">1.3</dt><dd data-i18n="ch1.f3">ha garden</dd></div>
           </dl>
+          <p class="meta" data-i18n="hero.meta">Concept project · Tashkent</p>
         </article>
 
         <article class="card" data-ch="1">
-          <p class="eyebrow"><span class="n">02</span><span data-i18n="ch2.eyebrow"></span></p>
           <h2 data-i18n="ch2.title"></h2>
           <p class="lede" data-i18n="ch2.text"></p>
           <ul class="poilist">
@@ -81,27 +80,24 @@
         </article>
 
         <article class="card" data-ch="2">
-          <p class="eyebrow"><span class="n">03</span><span data-i18n="ch3.eyebrow"></span></p>
           <h2 data-i18n="ch3.title"></h2>
           <p class="lede" data-i18n="ch3.text"></p>
           <div class="build">
             <div class="build-top"><strong id="bDate">Q3 2025</strong><span id="bStage"></span></div>
-            <div class="build-bar"><i id="bFill"></i><b id="bToday"><span data-i18n="build.today">Today</span></b></div>
+            <div class="build-bar"><i id="bFill"></i><s id="bPlan"></s><b id="bToday"><span data-i18n="build.today">Today</span></b></div>
             <p class="build-pct" id="bPct"></p>
           </div>
         </article>
 
         <article class="card" data-ch="3">
-          <p class="eyebrow"><span class="n">04</span><span data-i18n="ch4.eyebrow"></span></p>
           <h2 data-i18n="ch4.title"></h2>
           <p class="lede" data-i18n="ch4.text"></p>
           <dl class="facts">
-            <div><dt>380</dt><dd data-i18n="am.parking"></dd></div>
+            <div><dt>380</dt><dd data-i18n="am.parkingN"></dd></div>
           </dl>
         </article>
 
         <article class="card card-wide" data-ch="4">
-          <p class="eyebrow"><span class="n">05</span><span data-i18n="ch5.eyebrow"></span></p>
           <h2 data-i18n="ch5.title"></h2>
           <p class="lede" data-i18n="ch5.text"></p>
           <div class="floorpick">
@@ -111,25 +107,26 @@
               <button type="button" class="fp-step" id="fpUp" data-i18n-aria="fp.up">+</button>
             </div>
             <p class="fp-meta" id="fpMeta"></p>
-            <ul class="fp-flats" id="fpFlats"></ul>
-            <button type="button" class="btn btn-light fp-go" id="fpGo"><span data-i18n="fp.go"></span> <span aria-hidden="true">↓</span></button>
+            <button type="button" class="fp-more" id="fpMore" aria-controls="fpFlats"></button>
+            <ul class="fp-flats" id="fpFlats" aria-label="Flats on this floor"></ul>
+            <p class="fp-sel" id="fpSel" aria-live="polite"></p>
+            <button type="button" class="btn btn-light fp-go" id="fpGo"><span></span> <span aria-hidden="true">↓</span></button>
             <p class="fp-hint" data-i18n="fp.hint"></p>
           </div>
         </article>
 
         <article class="card" data-ch="5">
-          <p class="eyebrow"><span class="n">06</span><span data-i18n="ch6.eyebrow"></span></p>
           <h2 data-i18n="ch6.title"></h2>
           <p class="lede" data-i18n="ch6.text"></p>
+          <p class="apt-status" id="aptStatus"></p>
         </article>
 
         <article class="card" data-ch="6">
-          <p class="eyebrow"><span class="n">07</span><span data-i18n="ch7.eyebrow"></span></p>
           <h2 data-i18n="ch7.title"></h2>
           <p class="lede" data-i18n="ch7.text"></p>
           <div class="sun">
-            <div class="sun-top"><label for="sunRange" data-i18n="sun.time">Time of day</label><strong id="sunClock">13:00</strong></div>
-            <input type="range" id="sunRange" min="6" max="20" step="0.25" value="13">
+            <div class="sun-top"><label for="sunRange" data-i18n="sun.time">Time of day</label><strong id="sunClock">15:30</strong></div>
+            <input type="range" id="sunRange" min="6" max="20" step="0.25" value="15.5">
             <div class="seg" role="group">
               <button type="button" data-season="0" data-i18n="sun.summer">Summer</button>
               <button type="button" data-season="1" data-i18n="sun.winter">Winter</button>
@@ -148,6 +145,7 @@
         <li><button type="button"><span>06</span><em data-i18n="ch6.eyebrow"></em></button></li>
         <li><button type="button"><span>07</span><em data-i18n="ch7.eyebrow"></em></button></li>
       </ol>
+      <div class="steps" id="steps" role="group" aria-label="Chapters"></div>
       <div class="hint" id="hint" aria-hidden="true"><span data-i18n="scroll"></span><i></i></div>
     </div>
   </section>
@@ -155,7 +153,6 @@
   <section class="sec layouts" id="layouts">
     <div class="wrap">
       <header class="sec-head">
-        <p class="eyebrow dark" data-i18n="lay.eyebrow"></p>
         <h2 data-i18n="lay.title"></h2>
         <p data-i18n="lay.text"></p>
       </header>
@@ -166,12 +163,19 @@
   <section class="sec pay" id="payment">
     <div class="wrap pay-grid">
       <div class="pay-copy">
-        <p class="eyebrow dark" data-i18n="pay.eyebrow"></p>
         <h2 data-i18n="pay.title"></h2>
         <p data-i18n="pay.text"></p>
         <div class="field">
           <span class="field-label" data-i18n="pay.layout"></span>
           <div class="chips" id="payLayout" role="group"></div>
+        </div>
+        <div class="field">
+          <span class="field-label" id="payFloorLbl" data-i18n="pay.floor"></span>
+          <div class="stepper" role="group" aria-labelledby="payFloorLbl">
+            <button type="button" id="payFloorDown" data-i18n-aria="fp.down">−</button>
+            <strong id="payFloorNum">9</strong>
+            <button type="button" id="payFloorUp" data-i18n-aria="fp.up">+</button>
+          </div>
         </div>
         <div class="field">
           <label class="field-label" for="payDown"><span data-i18n="pay.down"></span> <b id="payDownPct">40%</b></label>
@@ -186,16 +190,36 @@
         <div class="pay-row"><span data-i18n="pay.price"></span><strong id="payPrice"></strong></div>
         <div class="pay-row"><span data-i18n="pay.first"></span><strong id="payFirst"></strong></div>
         <div class="pay-big"><span data-i18n="pay.monthly"></span><strong id="payMonthly"></strong><em id="payUsd"></em></div>
+        <button type="button" class="btn btn-cta pay-reserve" id="payReserve" data-i18n="pay.reserve"></button>
         <p class="pay-note" data-i18n="pay.note"></p>
       </div>
     </div>
   </section>
 
+  <section class="sec trust" id="trust">
+    <div class="wrap trust-grid">
+      <h2 data-i18n="trust.title"></h2>
+      <dl class="trust-list">
+        <div><dt data-i18n="trust.dev"></dt><dd data-i18n="trust.devT"></dd></div>
+        <div><dt data-i18n="trust.permit"></dt><dd data-i18n="trust.permitT"></dd></div>
+        <div><dt data-i18n="trust.money"></dt><dd data-i18n="trust.moneyT"></dd></div>
+        <div><dt data-i18n="trust.keys"></dt><dd data-i18n="trust.keysT"></dd></div>
+      </dl>
+    </div>
+  </section>
+
   <section class="sec end">
-    <div class="wrap end-inner">
-      <h2 data-i18n="end.title"></h2>
-      <p data-i18n="end.text"></p>
-      <button type="button" class="btn btn-cta btn-lg" data-visit data-i18n="end.btn"></button>
+    <div class="wrap end-grid">
+      <div class="end-copy">
+        <h2 data-i18n="end.title"></h2>
+        <p data-i18n="end.text"></p>
+        <button type="button" class="btn btn-cta btn-lg" data-visit data-i18n="end.btn"></button>
+      </div>
+      <dl class="office">
+        <div><dt data-i18n="end.office"></dt><dd data-i18n="end.addr"></dd></div>
+        <div><dt data-i18n="bk.phone"></dt><dd><a href="tel:+998710000000">+998 71 000 00 00</a></dd></div>
+        <div><dt data-i18n="end.hoursL"></dt><dd data-i18n="end.hours"></dd></div>
+      </dl>
     </div>
   </section>
 </main>
@@ -207,12 +231,42 @@
   </div>
 </footer>
 
-<dialog class="dlg" id="dlg" aria-labelledby="dlgTitle">
-  <h3 id="dlgTitle" data-i18n="dlg.title"></h3>
-  <p data-i18n="dlg.text"></p>
-  <div class="dlg-actions">
-    <a class="btn btn-cta" href="https://akbarovlabs.uz" rel="noopener" data-i18n="dlg.link"></a>
-    <button type="button" class="btn btn-ghost" id="dlgClose" data-i18n="dlg.close"></button>
+<dialog class="dlg" id="bk" aria-labelledby="bkTitle">
+  <form class="bk-form" id="bkForm" novalidate>
+    <p class="bk-demo" data-i18n="bk.demo"></p>
+    <h3 id="bkTitle" data-i18n="bk.title"></h3>
+    <label class="bk-field"><span data-i18n="bk.name"></span>
+      <input type="text" name="name" id="bkName" autocomplete="name" maxlength="60" aria-describedby="bkNameErr">
+      <em class="bk-err" id="bkNameErr"></em></label>
+    <label class="bk-field"><span data-i18n="bk.phone"></span>
+      <span class="bk-phone"><b>+998</b><input type="tel" name="phone" id="bkPhone" inputmode="numeric" autocomplete="tel-national" placeholder="90 123 45 67" aria-describedby="bkPhoneErr"></span>
+      <em class="bk-err" id="bkPhoneErr"></em></label>
+    <fieldset class="bk-field"><legend data-i18n="bk.via"></legend>
+      <div class="bk-via">
+        <label><input type="radio" name="via" value="call" checked><span data-i18n="bk.call"></span></label>
+        <label><input type="radio" name="via" value="tg"><span data-i18n="bk.tg"></span></label>
+        <label><input type="radio" name="via" value="wa"><span data-i18n="bk.wa"></span></label>
+      </div></fieldset>
+    <div class="bk-row">
+      <label class="bk-field"><span data-i18n="bk.date"></span>
+        <input type="date" name="date" id="bkDate" aria-describedby="bkDateErr">
+        <em class="bk-err" id="bkDateErr"></em></label>
+      <label class="bk-field"><span data-i18n="bk.flat"></span>
+        <input type="text" name="flat" id="bkFlat" readonly></label>
+    </div>
+    <div class="dlg-actions">
+      <button type="submit" class="btn btn-cta" data-i18n="bk.send"></button>
+      <button type="button" class="btn btn-ghost" data-close data-i18n="bk.cancel"></button>
+    </div>
+  </form>
+  <div class="bk-ok" id="bkOk" hidden>
+    <p class="bk-demo" data-i18n="bk.demo"></p>
+    <h3 data-i18n="bk.okTitle"></h3>
+    <p id="bkOkText"></p>
+    <div class="dlg-actions">
+      <button type="button" class="btn btn-cta" data-close data-i18n="bk.close"></button>
+      <a class="btn btn-ghost" href="https://akbarovlabs.uz" rel="noopener" data-i18n="bk.link"></a>
+    </div>
   </div>
 </dialog>
 

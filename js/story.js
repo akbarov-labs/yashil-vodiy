@@ -9,6 +9,7 @@ import { makeSky, newSkyState, skyState, sunAngles, dirFromAngles, directSunHour
 import { buildCity, POI } from './city.js';
 import { buildComplex, floorY, SLAB, APT } from './complex.js';
 import { buildApartment } from './apartment.js';
+import { store, setStore } from './store.js';
 
 const $ = (s) => document.querySelector(s);
 const sm = (a, b, x) => { const u = Math.min(1, Math.max(0, (x - a) / (b - a))); return u * u * (3 - 2 * u); };
@@ -71,7 +72,7 @@ export function start({ reduce = false, onFail } = {}) {
   }
 
   // ---------- state ----------
-  const state = { floor: D.FLOOR_DEFAULT, hour: 13, season: 1, hover: null };
+  const state = { floor: store.floor, hour: 15.5, season: 1, hover: null };
   const S = newSkyState();
   const sunDir = new THREE.Vector3(), lightDir = new THREE.Vector3();
   const anchor = new THREE.Vector3();
@@ -140,10 +141,19 @@ export function start({ reduce = false, onFail } = {}) {
     activeCh = i;
     cards.forEach((c, k) => { const on = k === i; c.classList.toggle('is-active', on); c.inert = !on; });
     railBtns.forEach((b, k) => { b.classList.toggle('is-active', k === i); b.setAttribute('aria-current', k === i ? 'step' : 'false'); });
+    stepBtns.forEach((b, k) => { b.classList.toggle('is-done', k < i); b.classList.toggle('is-active', k === i); b.setAttribute('aria-current', k === i ? 'step' : 'false'); });
   }
+  const STEP_KEYS = ['rail.home', 'ch2.eyebrow', 'ch3.eyebrow', 'ch4.eyebrow', 'ch5.eyebrow', 'ch6.eyebrow', 'ch7.eyebrow'];
+  const stepsEl = $('#steps');
+  stepsEl.innerHTML = D.CHAPTERS.map((c, i) => `<button type="button" data-i="${i}"><i></i></button>`).join('');
+  const stepBtns = [...stepsEl.children];
+  stepBtns.forEach((b, i) => b.addEventListener('click', () => scrollToTime(D.CHAPTERS[i].start + (i ? 1.6 : 0))));
+  function labelSteps() { stepBtns.forEach((b, i) => b.setAttribute('aria-label', `${i + 1}. ${tr(STEP_KEYS[i])}`)); }
+  labelSteps();
 
-  const bDate = $('#bDate'), bStage = $('#bStage'), bFill = $('#bFill'), bPct = $('#bPct'), bToday = $('#bToday');
-  bToday.style.left = ((D.TODAY - D.BUILD_START) / D.BUILD_SPAN * 100).toFixed(1) + '%';
+  const bDate = $('#bDate'), bStage = $('#bStage'), bFill = $('#bFill'), bPlan = $('#bPlan'), bPct = $('#bPct'), bToday = $('#bToday');
+  const todayP = (D.TODAY - D.BUILD_START) / D.BUILD_SPAN;
+  bToday.style.left = bPlan.style.left = (todayP * 100).toFixed(1) + '%';
   let lastBuild = '';
   function updateBuild(p) {
     const date = D.BUILD_START + p * D.BUILD_SPAN;
@@ -155,40 +165,82 @@ export function start({ reduce = false, onFail } = {}) {
     lastBuild = key;
     bDate.textContent = quarter(q, y);
     bStage.textContent = tr(stageKey);
-    bFill.style.width = (p * 100).toFixed(1) + '%';
-    bPct.textContent = Math.round(p * 100) + '% ' + tr('build.done');
+    bFill.style.width = (Math.min(p, todayP) * 100).toFixed(1) + '%';
+    bPlan.style.width = (Math.max(0, p - todayP) * 100).toFixed(1) + '%';
+    bPct.textContent = p <= todayP ? Math.round(p * 100) + '% ' + tr('build.done') : tr('build.planned');
   }
 
   const fpNum = $('#fpNum'), fpOf = $('#fpOf'), fpMeta = $('#fpMeta'), fpFlats = $('#fpFlats'), fpDown = $('#fpDown'), fpUp = $('#fpUp');
+  const fpSel = $('#fpSel'), fpGo = $('#fpGo'), fpMore = $('#fpMore'), floorpick = $('.floorpick'), aptStatus = $('#aptStatus');
+  const freeFloors = (f, k, max) => {
+    const out = [];
+    for (let d = 1; d <= D.PICK_MAX && out.length < max; d++) for (const g of [f + d, f - d]) {
+      if (g >= D.PICK_MIN && g <= D.PICK_MAX && D.flatStatus(g, k) !== 'sold' && out.length < max) out.push(g);
+    }
+    return out;
+  };
+  let fpGoAction = () => {};
   function renderFloorUI() {
-    fpNum.textContent = state.floor + 1;
+    const f = state.floor;
+    fpNum.textContent = f + 1;
     fpOf.textContent = tr('fp.of', { n: D.TOWER_A_FLOORS });
-    const sts = D.FLATS.map((f, k) => D.flatStatus(state.floor, k));
-    const free = sts.filter(s => s === 'free').length;
-    fpMeta.textContent = tr('fp.free', { n: free }) + ' · ' + tr('fp.ppm', { p: money(D.ppmFor(state.floor)) });
-    fpFlats.innerHTML = D.FLATS.map((f, k) => `<li class="st-${sts[k]}${f.tour ? ' is-tour' : ''}"><b>${tr('fp.r' + f.r)}</b><span>${area(f.a)}</span><em>${tr('st.' + sts[k])}</em></li>`).join('');
-    fpDown.disabled = state.floor <= D.PICK_MIN;
-    fpUp.disabled = state.floor >= D.PICK_MAX;
-    viewTag.textContent = tr('view', { n: state.floor + 1 });
+    const sts = D.FLATS.map((x, k) => D.flatStatus(f, k));
+    const free = sts.filter(st => st === 'free').length;
+    fpMeta.textContent = tr('fp.free', { n: free }) + ' · ' + tr('fp.ppm', { p: money(D.ppmFor(f)) });
+    fpFlats.innerHTML = D.FLATS.map((x, k) => `<li><button type="button" class="flat st-${sts[k]}" data-k="${k}" aria-pressed="${k === store.flat}"><b>${tr('fp.r' + x.r)}</b><span>${area(x.a)}</span><em>${tr('st.' + sts[k])}</em></button></li>`).join('');
+    const sel = D.FLATS[store.flat], st = sts[store.flat];
+    fpSel.textContent = `${tr('fp.r' + sel.r)} · ${area(sel.a)} · ${money(sel.a * D.ppmFor(f))}`;
+    let label;
+    if (sel.r === 3 && st === 'sold') {
+      const g = freeFloors(f, store.flat, 1)[0];
+      label = tr('fp.goSold', { n: g + 1 }); fpGoAction = () => setFloor(g);
+    } else if (sel.r === 3) {
+      label = tr('fp.go3d'); fpGoAction = () => scrollToTime(48.8);
+    } else {
+      label = tr('fp.goPay');
+      fpGoAction = () => { setStore({ layout: D.LAYOUTS.findIndex(L => L.r === sel.r) }); $('#payment').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); };
+    }
+    fpGo.firstElementChild.textContent = label;
+    fpDown.disabled = f <= D.PICK_MIN;
+    fpUp.disabled = f >= D.PICK_MAX;
+    const open = floorpick.classList.contains('is-open');
+    fpMore.textContent = tr(open ? 'fp.less' : 'fp.more');
+    fpMore.setAttribute('aria-expanded', String(open));
+    viewTag.textContent = tr('view', { n: f + 1 });
+    // the toured apartment is flat 3 on this floor
+    if (D.flatStatus(f, 2) === 'sold') {
+      aptStatus.textContent = tr('ap.sold', { n: f + 1, list: freeFloors(f, 2, 4).sort((a, b) => a - b).map(g => g + 1).join(', ') });
+      aptStatus.classList.add('is-sold');
+    } else {
+      aptStatus.textContent = tr('ap.free', { n: f + 1, p: money(D.FLATS[2].a * D.ppmFor(f)) });
+      aptStatus.classList.remove('is-sold');
+    }
   }
   function setFloor(f) {
     f = Math.max(D.PICK_MIN, Math.min(D.PICK_MAX, f));
     if (f === state.floor) return;
     state.floor = f;
+    setStore({ floor: f });
     placeApartment();
     renderFloorUI();
     invalidate();
   }
+  window.addEventListener('storechange', (e) => {
+    if (e.detail.floor != null && e.detail.floor !== state.floor) { state.floor = e.detail.floor; placeApartment(); renderFloorUI(); invalidate(); }
+  });
   fpDown.addEventListener('click', () => setFloor(state.floor - 1));
   fpUp.addEventListener('click', () => setFloor(state.floor + 1));
-  $('#fpGo').addEventListener('click', () => scrollToTime(48.8));
+  fpFlats.addEventListener('click', (e) => { const b = e.target.closest('button.flat'); if (b) { setStore({ flat: +b.dataset.k }); renderFloorUI(); } });
+  fpGo.addEventListener('click', () => fpGoAction());
+  fpMore.addEventListener('click', () => { floorpick.classList.toggle('is-open'); renderFloorUI(); });
 
   const sunRange = $('#sunRange'), sunClock = $('#sunClock'), sunHours = $('#sunHours');
   const seasonBtns = [...document.querySelectorAll('[data-season]')];
   sunRange.value = state.hour;
   function renderSunUI() {
     sunClock.textContent = clock(state.hour);
-    sunHours.textContent = tr('sun.hours', { h: num(directSunHours(state.season ? 355 : 172), 1) });
+    sunRange.setAttribute('aria-valuetext', clock(state.hour));
+    sunHours.textContent = tr(state.season ? 'sun.hoursW' : 'sun.hoursS', { h: num(directSunHours(state.season ? 355 : 172), 1) });
     seasonBtns.forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.season === state.season)));
   }
   sunRange.addEventListener('input', () => { state.hour = +sunRange.value; renderSunUI(); invalidate(); });
@@ -199,10 +251,11 @@ export function start({ reduce = false, onFail } = {}) {
   function scrollToTime(tt) {
     const top = scrollY + story.getBoundingClientRect().top;
     const span = story.offsetHeight - stage.clientHeight;
-    scrollTo({ top: top + span * (tt / D.DURATION), behavior: reduce ? 'auto' : 'smooth' });
+    const y = top + span * (tt / D.DURATION);
+    scrollTo({ top: y, behavior: reduce || Math.abs(y - scrollY) > innerHeight * 2.5 ? 'auto' : 'smooth' });
   }
 
-  function onLang() { renderLabelText(); renderFloorUI(); renderSunUI(); lastBuild = ''; invalidate(); }
+  function onLang() { renderLabelText(); renderFloorUI(); renderSunUI(); labelSteps(); lastBuild = ''; invalidate(); }
   window.addEventListener('langchange', onLang);
   renderFloorUI(); renderSunUI();
 
@@ -245,8 +298,8 @@ export function start({ reduce = false, onFail } = {}) {
     camPos.set(Math.sin(az) * Math.cos(el), Math.sin(el), Math.cos(az) * Math.cos(el)).multiplyScalar(camDist).add(tgt);
     camera.position.copy(camPos);
     camera.lookAt(tgt);
-    const phone = stage.clientWidth < 760;
-    camera.fov = (phone ? 52 : 42) + 12 * windowK;
+    const portrait = stage.clientHeight > stage.clientWidth;
+    camera.fov = (portrait ? 52 : 42) + 12 * windowK;
     camera.near = Math.min(12, Math.max(0.05, camDist * 0.01 * (1 - 0.92 * windowK)));
     camera.updateProjectionMatrix();
     camera.updateMatrixWorld();
@@ -257,8 +310,8 @@ export function start({ reduce = false, onFail } = {}) {
     renderer.setSize(w, h, false);
     if (composer) { composer.setPixelRatio(renderer.getPixelRatio()); composer.setSize(w, h); }
     camera.aspect = w / h;
-    if (w < 760) camera.setViewOffset(w, h, 0, Math.round(h * 0.15), w, h);
-    else camera.setViewOffset(w, h, -Math.round(Math.min(w * 0.15, 250)), 0, w, h);
+    if (h > w) camera.setViewOffset(w, h, 0, Math.round(h * 0.15), w, h);
+    else camera.setViewOffset(w, h, -Math.round(w < 1000 ? w * 0.2 : Math.min(w * 0.15, 250)), 0, w, h);
     camera.updateProjectionMatrix();
   }
 
@@ -296,7 +349,9 @@ export function start({ reduce = false, onFail } = {}) {
     apt.group.visible = liftK > 0.04;
     apt.ceilingMat.colorWrite = windowK > 0.97;
     pickK = D.track(D.PICK, t);
-    complex.setHighlight(state.floor, pickK * (1 - liftK), state.hover);
+    if (chIdx === 4 && !pulsed && !reduce) { pulsed = true; pulseEnd = performance.now() + 1900; }
+    const pn = performance.now(), pulse = pn < pulseEnd ? Math.sin((1 - (pulseEnd - pn) / 1900) * Math.PI * 3) ** 2 : 0;
+    complex.setHighlight(state.floor, pickK * (1 - liftK) * (1 + 0.9 * pulse), state.hover);
 
     // district
     city.update(t, S, D.track(D.ROUTES, t), D.track(D.POIS, t));
@@ -330,6 +385,7 @@ export function start({ reduce = false, onFail } = {}) {
 
   // ---------- loop: scroll sets the target time, the shown time eases toward it ----------
   let time = 0, target = 0, drawnT = -1, dirty = true, raf = 0, last = performance.now(), visible = true;
+  let pulsed = false, pulseEnd = 0;
   function readTarget() {
     const r = story.getBoundingClientRect();
     const span = r.height - stage.clientHeight;
@@ -343,6 +399,7 @@ export function start({ reduce = false, onFail } = {}) {
     else { time += (target - time) * (1 - Math.exp(-dt * 5)); if (Math.abs(target - time) < 0.002) time = target; }
     if (time !== drawnT || dirty) { render(time, now); drawnT = time; dirty = false; }
     $('#hint').classList.toggle('gone', time > 0.35);
+    if (performance.now() < pulseEnd) { dirty = true; schedule(); }
     if (time !== target) schedule();
   }
   function schedule() { if (!raf && visible && !document.hidden) { last = performance.now(); raf = requestAnimationFrame(frame); } }

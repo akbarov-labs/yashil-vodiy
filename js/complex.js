@@ -153,19 +153,33 @@ export function buildComplex({ eco, maxAniso }) {
     add('slab', ti, F, 'roof', T.cx - T.w / 2 - 0.1, yR + 0.95, T.cz, 0.3, 1.1, T.d + 0.5);
     add('slab', ti, F, 'roof', T.cx + T.w / 2 + 0.1, yR + 0.95, T.cz, 0.3, 1.1, T.d + 0.5);
     add('stone', ti, F, 'roof', T.cx, yR + 1.8, T.cz, Math.min(T.w, T.d) * 0.55, 3.2, Math.min(T.w, T.d) * 0.4);
+    // crown: a stone pergola frame around the roof terrace, with a warm light line under the beam
+    const cy = yR + 3.9, hw = T.w / 2, hd = T.d / 2;
+    add('stone', ti, F, 'roof', T.cx, cy, T.cz + hd + 0.15, T.w + 0.75, 0.6, 0.6);
+    add('stone', ti, F, 'roof', T.cx, cy, T.cz - hd - 0.15, T.w + 0.75, 0.6, 0.6);
+    add('stone', ti, F, 'roof', T.cx + hw + 0.15, cy, T.cz, 0.6, 0.6, T.d + 0.75);
+    add('stone', ti, F, 'roof', T.cx - hw - 0.15, cy, T.cz, 0.6, 0.6, T.d + 0.75);
+    const nx = Math.max(2, Math.round(T.w / 6)), nz = Math.max(2, Math.round(T.d / 6));
+    for (let k = 0; k <= nx; k++) for (const z of [T.cz + hd + 0.15, T.cz - hd - 0.15]) add('stone', ti, F, 'roof', T.cx - hw + k * T.w / nx, yR + 2.2, z, 0.5, 3.4, 0.5);
+    for (let k = 1; k < nz; k++) for (const x of [T.cx + hw + 0.15, T.cx - hw - 0.15]) add('stone', ti, F, 'roof', x, yR + 2.2, T.cz - hd + k * T.d / nz, 0.5, 3.4, 0.5);
+    const crownLight = new THREE.Color('#ffcf8a').multiplyScalar(2.2);
+    add('lit', ti, F, 'roof', T.cx, cy - 0.4, T.cz + hd + 0.47, T.w, 0.12, 0.05, crownLight);
+    add('lit', ti, F, 'roof', T.cx, cy - 0.4, T.cz - hd - 0.47, T.w, 0.12, 0.05, crownLight);
+    add('lit', ti, F, 'roof', T.cx + hw + 0.47, cy - 0.4, T.cz, 0.05, 0.12, T.d, crownLight);
+    add('lit', ti, F, 'roof', T.cx - hw - 0.47, cy - 0.4, T.cz, 0.05, 0.12, T.d, crownLight);
   });
 
   const MATS = {
     slab: std('#ffffff', 0.8),
     col: std('#a3a19b', 0.9),
-    stone: std('#d9c8aa', 0.72),
+    stone: std('#c9a983', 0.68),
     glass: std('#ffffff', 0.07, 0.92),
     lit: new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending }),
-    balc: std('#efebe3', 0.8),
+    balc: std('#f2ece2', 0.8),
     rail: std('#bfd2d8', 0.05, 0.4, { transparent: true, opacity: 0.32, depthWrite: false }),
   };
   const meshes = {};
-  const STONE = new THREE.Color('#e9e3d8'), CONCRETE = new THREE.Color('#a6a49e');
+  const STONE = new THREE.Color('#f1eadf'), CONCRETE = new THREE.Color('#a6a49e');
   for (const k of KINDS) {
     const list = recs[k];
     const m = new THREE.InstancedMesh(unit, MATS[k], list.length);

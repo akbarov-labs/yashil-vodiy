@@ -57,10 +57,10 @@ export function skyState(el, o) {
   o.top.copy(P.topN).lerp(P.topT, sm(-15, -3, el)).lerp(P.topD, sm(-2, 24, el));
   o.hor.copy(P.horN).lerp(P.horG, sm(-11, -0.5, el)).lerp(P.horD, sm(3, 26, el));
   o.sunCol.copy(P.sunG).lerp(P.sunD, sm(1, 32, el));
-  o.sunInt = 3.0 * sm(-1.5, 10, el);
+  o.sunInt = 3.25 * sm(-1.5, 10, el);
   o.hemiSky.copy(P.hemiN).lerp(P.hemiD, sm(-6, 20, el));
   o.hemiGround.copy(P.grN).lerp(P.grD, sm(-6, 20, el));
-  o.hemiInt = 0.28 + 0.6 * sm(-10, 18, el);
+  o.hemiInt = 0.26 + 0.5 * sm(-10, 18, el);
   o.envInt = 0.22 + 0.68 * sm(-9, 14, el);
   o.night = sm(4, -7, el);
   o.stars = sm(-5, -14, el);

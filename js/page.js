@@ -1,5 +1,6 @@
 import { initLang, setLang, getLang, t, money, usd, area, num } from './i18n.js';
-import { DURATION, CHAPTERS, LAYOUTS, ppmFor, FLOOR_DEFAULT } from './data.js';
+import { DURATION, CHAPTERS, LAYOUTS, FLATS, ppmFor, PICK_MIN, PICK_MAX } from './data.js';
+import { store, setStore } from './store.js';
 
 const $ = (s) => document.querySelector(s);
 const story = $('#story'), stage = $('#stage');
@@ -16,6 +17,7 @@ function onLang() {
   if (fbKey) $('#fbText').textContent = t(fbKey);
 }
 window.addEventListener('langchange', onLang);
+window.addEventListener('storechange', () => renderCalc());
 
 // ---------- header ----------
 const hdr = $('#hdr');
@@ -26,17 +28,13 @@ function timeToY(tt) {
   const top = scrollY + story.getBoundingClientRect().top;
   return top + (story.offsetHeight - stage.clientHeight) * (tt / DURATION);
 }
+// Long jumps are instant; the 3D eases to the new moment by itself.
+function go(y) { scrollTo({ top: y, behavior: reduce || Math.abs(y - scrollY) > innerHeight * 2.5 ? 'auto' : 'smooth' }); }
 document.querySelectorAll('[data-jump]').forEach(a => a.addEventListener('click', (e) => {
   if (story.classList.contains('is-static')) return;
   e.preventDefault();
-  scrollTo({ top: timeToY(CHAPTERS[+a.dataset.jump].start + 1.6), behavior: reduce ? 'auto' : 'smooth' });
+  go(timeToY(CHAPTERS[+a.dataset.jump].start + 1.6));
 }));
-
-// ---------- booking dialog ----------
-const dlg = $('#dlg');
-document.querySelectorAll('[data-visit]').forEach(b => b.addEventListener('click', () => dlg.showModal()));
-$('#dlgClose').addEventListener('click', () => dlg.close());
-dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
 
 // ---------- layouts ----------
 function planSVG(L) {
@@ -57,38 +55,100 @@ function renderLayouts() {
         <h3>${t('lay.r' + L.r)}</h3>
         <p class="lay-area">${area(L.a)}</p>
         <p class="lay-price">${t('lay.from', { p: money(L.a * ppmFor(1)) })}</p>
-        ${L.tour ? `<button type="button" class="btn btn-ghost-dark" data-tour>${t('lay.tour')}</button>` : `<button type="button" class="btn btn-ghost-dark" data-pick="${i}">${t('lay.calc')}</button>`}
+        <div class="lay-actions">
+          ${L.tour ? `<button type="button" class="btn btn-ghost-dark" data-tour>${t('lay.tour')}</button>` : ''}
+          <button type="button" class="btn btn-ghost-dark" data-pick="${i}">${t('lay.calc')}</button>
+        </div>
       </div>
     </article>`).join('');
   $('#layGrid [data-tour]')?.addEventListener('click', () => {
     if (story.classList.contains('is-static')) return;
-    scrollTo({ top: timeToY(50), behavior: reduce ? 'auto' : 'smooth' });
+    go(timeToY(50));
   });
   document.querySelectorAll('#layGrid [data-pick]').forEach(b => b.addEventListener('click', () => {
-    calc.layout = +b.dataset.pick; renderCalc();
+    setStore({ layout: +b.dataset.pick });
     $('#payment').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
   }));
 }
 
-// ---------- instalment calculator ----------
-const calc = { layout: 2, down: 40, term: 24 };
+// ---------- instalment calculator (shares floor and layout with the 3D story) ----------
+const calc = { down: 40, term: 24 };
 const TERMS = [12, 24, 36];
-$('#payDown').addEventListener('input', (e) => { calc.down = +e.target.value; renderCalc(); });
+const payDown = $('#payDown');
+payDown.addEventListener('input', () => { calc.down = +payDown.value; renderCalc(); });
+$('#payFloorDown').addEventListener('click', () => setStore({ floor: Math.max(PICK_MIN, store.floor - 1) }));
+$('#payFloorUp').addEventListener('click', () => setStore({ floor: Math.min(PICK_MAX, store.floor + 1) }));
+$('#payLayout').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) setStore({ layout: +b.dataset.i }); });
+$('#payTerm').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { calc.term = +b.dataset.n; renderCalc(); } });
 function renderCalc() {
-  $('#payLayout').innerHTML = LAYOUTS.map((L, i) => `<button type="button" aria-pressed="${i === calc.layout}" data-i="${i}">${t('lay.r' + L.r)}</button>`).join('');
+  $('#payLayout').innerHTML = LAYOUTS.map((L, i) => `<button type="button" aria-pressed="${i === store.layout}" data-i="${i}">${t('lay.r' + L.r)}</button>`).join('');
   $('#payTerm').innerHTML = TERMS.map(n => `<button type="button" aria-pressed="${n === calc.term}" data-n="${n}">${t('pay.months', { n })}</button>`).join('');
-  document.querySelectorAll('#payLayout button').forEach(b => b.addEventListener('click', () => { calc.layout = +b.dataset.i; renderCalc(); }));
-  document.querySelectorAll('#payTerm button').forEach(b => b.addEventListener('click', () => { calc.term = +b.dataset.n; renderCalc(); }));
-  const L = LAYOUTS[calc.layout];
-  const price = L.a * ppmFor(FLOOR_DEFAULT);
+  $('#payFloorNum').textContent = store.floor + 1;
+  $('#payFloorDown').disabled = store.floor <= PICK_MIN;
+  $('#payFloorUp').disabled = store.floor >= PICK_MAX;
+  const L = LAYOUTS[store.layout];
+  const price = L.a * ppmFor(store.floor);
   const first = price * calc.down / 100;
   const monthly = (price - first) / calc.term;
   $('#payDownPct').textContent = calc.down + '%';
+  payDown.setAttribute('aria-valuetext', calc.down + '%');
   $('#payPrice').textContent = money(price);
   $('#payFirst').textContent = money(first);
   $('#payMonthly').textContent = money(monthly);
   $('#payUsd').textContent = usd(monthly);
 }
+
+// ---------- booking (a demo form: validates, never sends) ----------
+const bk = $('#bk'), bkForm = $('#bkForm'), bkOk = $('#bkOk');
+const bkName = $('#bkName'), bkPhone = $('#bkPhone'), bkDate = $('#bkDate'), bkFlat = $('#bkFlat');
+let bkCtx = null;
+function flatContext(fromCalc) {
+  if (fromCalc) { const L = LAYOUTS[store.layout]; return { r: L.r, a: L.a, floor: store.floor }; }
+  const f = FLATS[store.flat]; return { r: f.r, a: f.a, floor: store.floor };
+}
+function isoDay(offset) { const d = new Date(); d.setDate(d.getDate() + offset); return d.toISOString().slice(0, 10); }
+function openBooking(ctx) {
+  bkCtx = ctx;
+  bkFlat.value = t('bk.flatVal', { r: t('fp.r' + ctx.r), a: area(ctx.a), n: ctx.floor + 1 });
+  bkDate.min = isoDay(1);
+  if (!bkDate.value || bkDate.value < bkDate.min) bkDate.value = isoDay(2);
+  ['bkNameErr', 'bkPhoneErr', 'bkDateErr'].forEach(id => { $('#' + id).textContent = ''; });
+  [bkName, bkPhone, bkDate].forEach(el => el.removeAttribute('aria-invalid'));
+  bkForm.hidden = false; bkOk.hidden = true;
+  bk.showModal();
+  bkName.focus();
+}
+document.querySelectorAll('[data-visit]').forEach(b => b.addEventListener('click', () => openBooking(flatContext(false))));
+$('#payReserve').addEventListener('click', () => openBooking(flatContext(true)));
+bk.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => bk.close()));
+bk.addEventListener('click', (e) => { if (e.target === bk) bk.close(); });
+window.addEventListener('langchange', () => { if (bk.open && bkCtx && !bkForm.hidden) bkFlat.value = t('bk.flatVal', { r: t('fp.r' + bkCtx.r), a: area(bkCtx.a), n: bkCtx.floor + 1 }); });
+
+bkPhone.addEventListener('input', () => {
+  const d = bkPhone.value.replace(/\D/g, '').slice(0, 9);
+  bkPhone.value = [d.slice(0, 2), d.slice(2, 5), d.slice(5, 7), d.slice(7, 9)].filter(Boolean).join(' ');
+});
+bkForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const name = bkName.value.trim(), digits = bkPhone.value.replace(/\D/g, ''), date = bkDate.value;
+  const errs = [
+    [bkName, 'bkNameErr', name ? '' : t('bk.errName')],
+    [bkPhone, 'bkPhoneErr', digits.length === 9 ? '' : t('bk.errPhone')],
+    [bkDate, 'bkDateErr', date && date >= bkDate.min ? '' : t('bk.errDate')],
+  ];
+  let firstBad = null;
+  for (const [el, id, msg] of errs) {
+    $('#' + id).textContent = msg;
+    if (msg) { el.setAttribute('aria-invalid', 'true'); firstBad ||= el; } else el.removeAttribute('aria-invalid');
+  }
+  if (firstBad) { firstBad.focus(); return; }
+  const via = t({ call: 'bk.call', tg: 'bk.tg', wa: 'bk.wa' }[new FormData(bkForm).get('via')]);
+  const loc = { uz: 'uz-UZ', ru: 'ru-RU', en: 'en-GB' }[getLang()];
+  const when = new Date(date + 'T12:00').toLocaleDateString(loc, { day: 'numeric', month: 'long' });
+  $('#bkOkText').textContent = t('bk.okText', { name, via, phone: '+998 ' + bkPhone.value, date: when });
+  bkForm.hidden = true; bkOk.hidden = false;
+  bkOk.querySelector('[data-close]').focus();
+});
 
 // ---------- 3D tour or static fallback ----------
 let fbKey = null;
