@@ -93,7 +93,7 @@ p { margin: 0; }
 .stage.is-ready .loader { opacity: 0; }
 
 .cards { position: absolute; inset: 0; pointer-events: none; }
-.card { position: absolute; left: clamp(16px, 3.4vw, 56px); top: 50%; width: min(440px, 36vw); padding: 56px calc(var(--m) * 1.25) var(--m); background: var(--shade); border: var(--line) solid var(--shade-3); border-radius: 2px; overflow: hidden; box-shadow: 0 18px 40px -18px rgba(0, 0, 0, .55); opacity: 0; visibility: hidden; transform: translateY(calc(-50% + 12px)); transition: opacity .45s cubic-bezier(.16, 1, .3, 1), transform .45s cubic-bezier(.16, 1, .3, 1), visibility 0s linear .45s; }
+.card { position: absolute; left: clamp(16px, 3.4vw, 56px); top: 50%; width: min(440px, 36vw); padding: 56px calc(var(--m) * 1.25) var(--m); background: var(--shade); border: var(--line) solid var(--shade-3); border-radius: 2px; overflow: hidden; box-shadow: 0 18px 40px -18px rgba(0, 0, 0, .55); opacity: 0; visibility: hidden; transform: translateY(calc(-50% + 12px)); transition: opacity .14s linear, transform .14s linear, visibility 0s linear .14s; }
 /* the signature: hard-edged leaf shadows, moved and dimmed by the scene's sun */
 .card::before, .card::after { content: ''; position: absolute; background: var(--leaves-photo) calc(50% + var(--sx)) 30% / 640px auto; filter: grayscale(1) sepia(1) saturate(2.6) hue-rotate(-8deg) brightness(1.05) contrast(1.25); mix-blend-mode: screen; pointer-events: none; opacity: calc(var(--sun) * .95); transition: background-position .6s cubic-bezier(.16, 1, .3, 1), opacity .6s; }
 /* sunlight through chinar leaves: the backlit-leaf photo used as light, across the top margin and down the right edge, clear of the copy */
@@ -101,7 +101,8 @@ p { margin: 0; }
 .card::after { top: 40px; right: 0; bottom: 0; width: 22px; background-position: calc(30% + var(--sx)) calc(60% + var(--sy)); }
 .card > * { position: relative; }
 .card > h1, .card > h2 { padding-right: 16px; overflow-wrap: break-word; }
-.card.is-active { opacity: 1; visibility: visible; transform: translateY(-50%); pointer-events: auto; transition: opacity .45s cubic-bezier(.16, 1, .3, 1), transform .45s cubic-bezier(.16, 1, .3, 1), visibility 0s; }
+/* hand-off, not a cross-fade: the old card is gone (.14s) before the new one starts, so two cards never show at once on fast scrolls */
+.card.is-active { opacity: 1; visibility: visible; transform: translateY(-50%); pointer-events: auto; transition: opacity .4s cubic-bezier(.16, 1, .3, 1) .14s, transform .4s cubic-bezier(.16, 1, .3, 1) .14s, visibility 0s; }
 .card-wide { width: min(472px, 38vw); }
 .card h1 { font-size: clamp(2.1rem, 3.4vw, 3.15rem); margin-bottom: var(--m); color: var(--on-shade); }
 .card h2 { font-size: clamp(1.8rem, 2.7vw, 2.6rem); margin-bottom: 16px; color: var(--on-shade); }
