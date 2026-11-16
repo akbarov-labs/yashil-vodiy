@@ -80,8 +80,8 @@ p { margin: 0; }
 .hdr.is-solid .chbar { opacity: 0; }
 
 /* ---------- story ---------- */
-.story { position: relative; height: 1150vh; height: 1150svh; background: var(--shade); }
-.stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; background: var(--shade); color: var(--on-shade); --sx: 0px; --sy: 0px; --sun: .5; }
+.story { position: relative; height: 1150vh; height: 1150svh; height: calc(var(--app-h, 100svh) * 11.5); background: var(--shade); }
+.stage { position: sticky; top: 0; height: 100vh; height: 100svh; height: var(--app-h, 100svh); overflow: hidden; background: var(--shade); color: var(--on-shade); --sx: 0px; --sy: 0px; --sun: .5; }
 #gl { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity .9s ease-out; }
 .poster { position: absolute; inset: 0; pointer-events: none; background: var(--shade); opacity: .9; transition: opacity 1s ease-out; }
 .stage.is-ready #gl { opacity: 1; }

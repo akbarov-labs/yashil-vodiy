@@ -136,11 +136,14 @@ export function start({ reduce = false, onFail } = {}) {
   }
 
   // ---------- chapter UI ----------
-  let activeCh = -1;
+  let activeCh = -1, cardTimer = 0, cardsShown = false;
+  function showCard(i) { cards.forEach((c, k) => { const on = k === i; c.classList.toggle('is-active', on); c.inert = !on; }); }
   function setChapter(i) {
     if (i === activeCh) return;
     activeCh = i;
-    cards.forEach((c, k) => { const on = k === i; c.classList.toggle('is-active', on); c.inert = !on; });
+    clearTimeout(cardTimer);
+    if (!cardsShown) { showCard(i); cardsShown = true; }
+    else { showCard(-1); cardTimer = setTimeout(() => showCard(activeCh), 180); }
     railBtns.forEach((b, k) => { b.classList.toggle('is-active', k === i); b.setAttribute('aria-current', k === i ? 'step' : 'false'); });
     stepBtns.forEach((b, k) => { b.classList.toggle('is-done', k < i); b.classList.toggle('is-active', k === i); b.setAttribute('aria-current', k === i ? 'step' : 'false'); });
   }
@@ -412,7 +415,12 @@ export function start({ reduce = false, onFail } = {}) {
   function invalidate() { dirty = true; schedule(); }
 
   addEventListener('scroll', schedule, { passive: true });
-  addEventListener('resize', () => { layout(); invalidate(); });
+  let stageW = stage.clientWidth, stageH = stage.clientHeight;
+  addEventListener('resize', () => {
+    const w = stage.clientWidth, h = stage.clientHeight;
+    if (w === stageW && h === stageH) return;
+    stageW = w; stageH = h; layout(); invalidate();
+  });
   document.addEventListener('visibilitychange', () => { if (!document.hidden) invalidate(); });
   new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) invalidate(); }, { rootMargin: '100px' }).observe(story);
   canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); onFail?.(); });

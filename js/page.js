@@ -6,6 +6,21 @@ const $ = (s) => document.querySelector(s);
 const story = $('#story'), stage = $('#stage');
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// ---------- screen height ----------
+// In-app browsers (Instagram, Telegram) show and hide their bars while you scroll, which changes the
+// viewport height every few frames and makes the 3D stage jump. Measure once and only re-measure when
+// the width changes (rotation) or the height changes a lot.
+let appW = 0, appH = 0;
+function lockHeight() {
+  const w = innerWidth, h = innerHeight;
+  // same width and only a bar's worth taller: keep the smaller height, so it never jumps back and forth
+  if (w === appW && h >= appH && h - appH < appH * 0.2) return;
+  appW = w; appH = h;
+  document.documentElement.style.setProperty('--app-h', h + 'px');
+}
+lockHeight();
+addEventListener('resize', lockHeight);
+
 // ---------- language ----------
 document.querySelectorAll('[data-lang]').forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang)));
 function onLang() {
@@ -171,7 +186,7 @@ function load3D() {
   fbKey = null;
   story.classList.remove('is-static');
   $('#fbNote').hidden = true;
-  import('./story.js')
+  import('./story.js?v=3')
     .then(m => m.start({ reduce, onFail: () => goStatic('fb.fail', false) }))
     .catch(err => { console.error(err); goStatic('fb.fail', false); });
 }
